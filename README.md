@@ -10,6 +10,7 @@
 [![C++](https://img.shields.io/badge/Core-C%2B%2B17-blue)](https://github.com/Developer-Ayush/rudra512)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-yellow)](https://pypi.org/project/rudra-512-hash/)
 [![Node.js](https://img.shields.io/badge/Node.js-12%2B-green)](https://www.npmjs.com/package/rudra-512-hash)
+[![Live Demo](https://img.shields.io/badge/Web-Visualizer-purple)](https://rudra-512-hash.vercel.app/)
 
 </div>
 
@@ -23,6 +24,19 @@ Rudra-512 is a custom cryptographic hash function that produces a **512-bit (128
 Input:  "hello"
 Output: a3f1c8...e92b14  (128 hex characters, always)
 ```
+---
+
+## 🌐 Web Demo
+
+A simple interactive visualizer to see how Rudra-512 works step by step.
+
+🔗 **Live Demo:** YOUR_LINK_HERE
+
+- Step-by-step rounds  
+- Internal state updates  
+- Bit-level changes (avalanche effect)  
+
+---
 
 ### Key Features
 
