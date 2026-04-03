@@ -460,7 +460,7 @@ Contributions are welcome! For significant changes, please open an issue first t
 Licensed under the [Apache License 2.0](LICENSE).
 
 ```
-Copyright 2024 Ayush Anand
+Copyright 2026 Ayush Anand
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
