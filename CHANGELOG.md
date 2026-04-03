@@ -17,6 +17,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Python bindings via pybind11 — `hash_string()`, `hash_file()`
 - Node.js native addon via N-API — `hash()`
 - CLI tool (`rudra`) for both Python and Node.js packages
+- Website also available
 - File hashing support (memory-efficient, no full load)
 - Benchmark script (`benchmark.py`) comparing against SHA-512 and SHA3-512
 - Cross-platform support: Linux, macOS, Windows
