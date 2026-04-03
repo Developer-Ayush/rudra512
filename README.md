@@ -7,8 +7,8 @@
 [![npm version](https://badge.fury.io/js/rudra-512-hash.svg)](https://www.npmjs.com/package/rudra-512-hash)
 [![PyPI version](https://badge.fury.io/py/rudra-512-hash.svg)](https://pypi.org/project/rudra-512-hash/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![C++](https://img.shields.io/badge/Core-C%2B%2B-blue)](https://github.com/Developer-Ayush/rudra512)
-[![Python](https://img.shields.io/badge/Python-3.7%2B-yellow)](https://pypi.org/project/rudra-512-hash/)
+[![C++](https://img.shields.io/badge/Core-C%2B%2B17-blue)](https://github.com/Developer-Ayush/rudra512)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-yellow)](https://pypi.org/project/rudra-512-hash/)
 [![Node.js](https://img.shields.io/badge/Node.js-12%2B-green)](https://www.npmjs.com/package/rudra-512-hash)
 
 </div>
@@ -21,7 +21,7 @@ Rudra-512 is a custom cryptographic hash function that produces a **512-bit (128
 
 ```
 Input:  "hello"
-Output: a3f1c8...e92b14  (128 hex characters)
+Output: a3f1c8...e92b14  (128 hex characters, always)
 ```
 
 ### Key Features
@@ -29,7 +29,7 @@ Output: a3f1c8...e92b14  (128 hex characters)
 | Feature | Detail |
 |---|---|
 | ⚡ **Native C++ core** | High-performance implementation with Python & Node.js bindings |
-| 🐢 **GPU-resistant** | Intentionally rate-limited to slow down GPU-accelerated attacks |
+| 🐢 **GPU-resistant** | Intentionally rate-limited to slow down GPU-accelerated brute-force |
 | 🔐 **512-bit output** | 128-character hex digest for strong collision resistance |
 | 🌊 **High avalanche effect** | ~50% bit change on any input modification |
 | 🧂 **Salt support** | Optional per-hash salt for added uniqueness |
@@ -48,7 +48,7 @@ Output: a3f1c8...e92b14  (128 hex characters)
 pip install rudra-512-hash
 ```
 
-> Requires Python 3.7+
+> Requires Python 3.8+
 
 ### Node.js
 
@@ -69,21 +69,24 @@ npm install -g rudra-512-hash
 ```python
 from rudra512 import hash_string, hash_file
 
-# Hash a string
-digest = hash_string("hello", 32)
+# Hash a string (rounds defaults to 32)
+digest = hash_string("hello")
 print(digest)
 # → 128-character hex string
 
+# Hash with custom rounds
+digest64 = hash_string("hello", 64)
+
 # Hash with salt
-salted = hash_string("hello", 32, "mysalt")
+salted = hash_string("hello", salt="mysalt")
 print(salted)
 
 # Hash a file
-file_hash = hash_file("document.pdf", 32)
+file_hash = hash_file("document.pdf")
 print(file_hash)
 
-# File hash with salt
-file_salted = hash_file("document.pdf", 32, "mysalt")
+# File hash with salt and custom rounds
+file_salted = hash_file("document.pdf", 64, "mysalt")
 print(file_salted)
 ```
 
@@ -92,9 +95,12 @@ print(file_salted)
 ```javascript
 const rudra = require("rudra-512-hash");
 
-// Hash a string
-const digest = rudra.hash("hello", 32);
+// Hash a string (rounds defaults to 32)
+const digest = rudra.hash("hello");
 console.log(digest);
+
+// Hash with custom rounds
+const digest64 = rudra.hash("hello", 64);
 
 // Hash with salt
 const salted = rudra.hash("hello", 32, "mysalt");
@@ -113,7 +119,7 @@ console.log(fileHash);
 
 ### Python
 
-#### `hash_string(input, rounds, salt="")`
+#### `hash_string(input, rounds=32, salt="")`
 
 Hashes a string and returns a 128-character hex digest.
 
@@ -123,19 +129,22 @@ Hashes a string and returns a 128-character hex digest.
 | `rounds` | `int` | `32` | Number of compression rounds |
 | `salt` | `str` | `""` | Optional salt for added security |
 
+**Returns:** `str` — 128-character hexadecimal string
+
 ```python
 from rudra512 import hash_string
 
-hash_string("hello", 32)             # basic
-hash_string("hello", 32, "mysalt")   # with salt
-hash_string("sensitive", 64)         # higher security
+hash_string("hello")                   # default 32 rounds
+hash_string("hello", 64)              # higher security
+hash_string("hello", salt="mysalt")   # with salt
+hash_string("hello", 64, "mysalt")    # rounds + salt
 ```
 
 ---
 
-#### `hash_file(filepath, rounds, salt="")`
+#### `hash_file(filepath, rounds=32, salt="")`
 
-Hashes a file directly from disk without loading it fully into memory.
+Hashes a file directly from disk. Memory-efficient — does not load the entire file at once.
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -143,20 +152,22 @@ Hashes a file directly from disk without loading it fully into memory.
 | `rounds` | `int` | `32` | Number of compression rounds |
 | `salt` | `str` | `""` | Optional salt |
 
+**Returns:** `str` — 128-character hexadecimal string
+
 ```python
 from rudra512 import hash_file
 
-hash_file("document.pdf", 32)
-hash_file("document.pdf", 32, "mysalt")
+hash_file("document.pdf")               # default rounds
+hash_file("document.pdf", 64, "salt")  # rounds + salt
 ```
 
 ---
 
 ### Node.js
 
-#### `rudra.hash(input, rounds, salt="")`
+#### `rudra.hash(input, rounds=32, salt="")`
 
-Hashes a string (or Buffer) and returns a 128-character hex digest.
+Hashes a string or Buffer and returns a 128-character hex digest.
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -164,12 +175,14 @@ Hashes a string (or Buffer) and returns a 128-character hex digest.
 | `rounds` | `number` | `32` | Number of compression rounds |
 | `salt` | `string` | `""` | Optional salt |
 
+**Returns:** `string` — 128-character hexadecimal string
+
 ```javascript
 const rudra = require("rudra-512-hash");
 
-rudra.hash("hello", 32);
-rudra.hash("hello", 32, "mysalt");
-rudra.hash("sensitive", 64);
+rudra.hash("hello");                    // default rounds
+rudra.hash("hello", 64);               // higher security
+rudra.hash("hello", 32, "mysalt");     // with salt
 ```
 
 ---
@@ -179,10 +192,10 @@ rudra.hash("sensitive", 64);
 Both packages install a `rudra` CLI tool.
 
 ```bash
-# Hash a string
+# Hash a string (default 32 rounds)
 rudra hello
 
-# With custom rounds
+# Custom rounds
 rudra hello --rounds 64
 
 # With salt
@@ -191,10 +204,10 @@ rudra hello --salt mysecret
 # Hash a file
 rudra --file document.pdf
 
-# Combined
+# Combined options
 rudra --file document.pdf --rounds 64 --salt mysecret
 
-# File integrity checksum
+# Save a checksum
 rudra --file backup.zip --rounds 64 > checksum.txt
 ```
 
@@ -212,22 +225,22 @@ rudra --file backup.zip --rounds 64 > checksum.txt
 
 ## Rounds Configuration
 
-The `rounds` parameter is the primary knob for balancing speed and security:
+The `rounds` parameter balances speed and security:
 
-| Rounds | Use Case |
+| Rounds | Recommended For |
 |---|---|
 | 8–16 | Non-cryptographic checksums, fast deduplication |
 | **32 (default)** | General-purpose cryptographic hashing |
 | 64 | Password hashing, sensitive data |
 | 128+ | Maximum security, high-value secrets |
 
-> ℹ️ Salt adds negligible performance overhead but significantly improves security against precomputed attacks.
+> Salt adds negligible performance overhead but significantly improves security against precomputed attacks.
 
 ---
 
 ## Benchmark Results
 
-Tested against SHA-512 and SHA3-512 across frequency, entropy, avalanche, and speed:
+> ⚠️ **Note:** Results below were recorded on a single system at a specific point in time. Performance varies by CPU, OS, system load, and compiler version. These numbers are provided for relative comparison only — run `benchmark.py` to get results for your own environment.
 
 | Algorithm | Frequency | Entropy | Avalanche | Speed (hashes/sec) | Collisions |
 |---|---|---|---|---|---|
@@ -237,10 +250,15 @@ Tested against SHA-512 and SHA3-512 across frequency, entropy, avalanche, and sp
 
 **Metric guide:**
 
-- **Frequency** — Bit distribution balance. Ideal: 50%
-- **Entropy** — Output unpredictability. Ideal: 1.0
-- **Avalanche** — Sensitivity to input changes. Ideal: 50%
+- **Frequency** — Bit distribution balance. Closer to 50% is better.
+- **Entropy** — Output unpredictability. Closer to 1.0 is better.
+- **Avalanche** — How much the output changes when one input bit flips. Ideal: 50%.
 - **Speed** — Raw throughput. Rudra-512 is intentionally slower than SHA-512 to resist GPU attacks.
+
+To reproduce on your machine:
+```bash
+python becnhmark.py
+```
 
 ---
 
@@ -256,7 +274,7 @@ import json
 files = ["file1.txt", "file2.pdf", "archive.zip"]
 
 # Generate and save checksums
-checksums = {f: hash_file(f, 32) for f in files}
+checksums = {f: hash_file(f) for f in files}
 with open("checksums.json", "w") as out:
     json.dump(checksums, out, indent=2)
 
@@ -265,7 +283,7 @@ with open("checksums.json") as f:
     saved = json.load(f)
 
 for path, expected in saved.items():
-    status = "✓ OK" if hash_file(path, 32) == expected else "✗ MODIFIED"
+    status = "✓ OK" if hash_file(path) == expected else "✗ MODIFIED"
     print(f"{status} — {path}")
 ```
 
@@ -278,14 +296,14 @@ const files = ["file1.txt", "file2.pdf", "archive.zip"];
 
 // Generate and save checksums
 const checksums = Object.fromEntries(
-    files.map(f => [f, rudra.hash(fs.readFileSync(f, "utf-8"), 32)])
+    files.map(f => [f, rudra.hash(fs.readFileSync(f, "utf-8"))])
 );
 fs.writeFileSync("checksums.json", JSON.stringify(checksums, null, 2));
 
 // Verify later
 const saved = JSON.parse(fs.readFileSync("checksums.json", "utf-8"));
 for (const [path, expected] of Object.entries(saved)) {
-    const current = rudra.hash(fs.readFileSync(path, "utf-8"), 32);
+    const current = rudra.hash(fs.readFileSync(path, "utf-8"));
     console.log(`${current === expected ? "✓ OK" : "✗ MODIFIED"} — ${path}`);
 }
 ```
@@ -333,20 +351,20 @@ console.log(verifyPassword("my_secure_password", stored)); // true
 console.log(verifyPassword("wrong_password", stored));     // false
 ```
 
-> ⚠️ For production password storage, prefer dedicated KDFs like **Argon2**, **bcrypt**, or **scrypt**, which are formally audited and purpose-built for this task.
+> ⚠️ For production password storage, prefer dedicated KDFs like **Argon2**, **bcrypt**, or **scrypt** — they are formally audited and purpose-built for this use case.
 
 ---
 
 ## Security Notes
 
-> ⚠️ **Rudra-512 is a custom hash function.** It has not undergone formal third-party cryptanalysis. For production security-critical systems, established standards like SHA-2, SHA-3, or BLAKE3 are recommended.
+> ⚠️ **Rudra-512 is a custom, experimental hash function.** It has not undergone formal third-party cryptanalysis. For production security-critical systems, consider established standards like SHA-2, SHA-3, or BLAKE3.
 
 **Best practices:**
 - Use **32+ rounds** for general cryptographic use
 - Use **64+ rounds** for password hashing
-- **Always salt** password hashes
+- **Always use salt** for password hashes
 - Output is fully **deterministic**: same input + rounds + salt → same hash
-- Not yet formally audited for vulnerabilities
+- Not yet formally audited for cryptographic vulnerabilities
 
 ---
 
@@ -356,9 +374,9 @@ Rudra-512 is built on:
 
 - **512-bit internal state** — 8 × 64-bit words
 - **Configurable compression rounds** — default: 32
-- **Optional salt integration** — prepended before hashing
+- **Optional salt integration** — mixed in before the first round
 - **Optimized bitwise operations** — rotations, XOR mixing, modular additions
-- **Native C++ implementation** — with pybind11 (Python) and N-API (Node.js) bindings
+- **Native C++17 implementation** — with pybind11 (Python) and N-API (Node.js) bindings
 
 ---
 
@@ -379,6 +397,27 @@ npm install
 npm link
 ```
 
+**C++ CLI only (via CMake):**
+```bash
+git clone https://github.com/Developer-Ayush/rudra512
+cd rudra512
+cmake -B build
+cmake --build build
+./build/rudra hello
+```
+
+---
+
+## Use Cases
+
+- **Data integrity** — Checksum generation for file transfers and backups
+- **Digital signatures** — Hash content before signing
+- **Password hashing** — Secure digest generation (use 64+ rounds + salt)
+- **Content addressing** — Deterministic unique IDs for data blobs
+- **Deduplication** — Identify duplicate files efficiently
+- **Cache keys** — Stable, collision-resistant identifiers
+- **Blockchain / consensus** — Custom hash functions for experimental chains
+
 ---
 
 ## Contributing
@@ -394,15 +433,16 @@ Contributions are welcome! For significant changes, please open an issue first t
 
 ---
 
-## Use Cases
+## Changelog
 
-- **Data integrity** — Checksum generation for file transfers and backups
-- **Digital signatures** — Hash content before signing
-- **Password hashing** — Secure digest generation (use 64+ rounds + salt)
-- **Content addressing** — Deterministic unique IDs for data blobs
-- **Deduplication** — Identify duplicate files efficiently
-- **Cache keys** — Stable, collision-resistant cache identifiers
-- **Blockchain / consensus** — Custom hash functions for experimental chains
+### v1.0.0
+- Initial release
+- Python bindings via pybind11 (`hash_string`, `hash_file`)
+- Node.js native addon via N-API (`hash`)
+- Salt and configurable rounds support (all parameters optional, defaults to 32 rounds)
+- CLI tool (`rudra`) for both platforms
+- File hashing support
+- Cross-platform compatibility (Linux, macOS, Windows)
 
 ---
 
@@ -414,19 +454,6 @@ Contributions are welcome! For significant changes, please open an issue first t
 | PyPI | https://pypi.org/project/rudra-512-hash/ |
 | npm | https://www.npmjs.com/package/rudra-512-hash |
 | Issues | https://github.com/Developer-Ayush/rudra512/issues |
-
----
-
-## Changelog
-
-### v1.0.0
-- Initial release
-- Python bindings via pybind11 (`hash_string`, `hash_file`)
-- Node.js native addon via N-API (`hash`)
-- Salt and configurable rounds support
-- CLI tool (`rudra`) for both platforms
-- File hashing support
-- Cross-platform compatibility
 
 ---
 
@@ -448,8 +475,8 @@ You may obtain a copy of the License at
 
 ## Author
 
-**Ayush Anand**  
-📧 developerayushanand@gmail.com  
+**Ayush Anand**
+📧 developerayushanand@gmail.com
 🐙 [github.com/Developer-Ayush](https://github.com/Developer-Ayush)
 
 ---
