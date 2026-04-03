@@ -207,8 +207,6 @@ rudra --file document.pdf
 # Combined options
 rudra --file document.pdf --rounds 64 --salt mysecret
 
-# Save a checksum
-rudra --file backup.zip --rounds 64 > checksum.txt
 ```
 
 ### CLI Options
