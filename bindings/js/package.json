@@ -1,0 +1,32 @@
+{
+  "name": "rudra-512-hash",
+  "version": "1.0.0",
+  "description": "Rudra-512 cryptographic hash function",
+  "main": "index.js",
+  "bin": {
+    "rudra": "cli.js"
+  },
+  "gypfile": true,
+  "author": "Ayush Anand",
+  "license": "Apache-2.0",
+  "keywords": [
+    "hash",
+    "crypto",
+    "rudra",
+    "512"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Developer-Ayush/rudra512"
+  },
+  "bugs": {
+    "url": "https://github.com/Developer-Ayush/rudra512/issues"
+  },
+  "homepage": "https://github.com/Developer-Ayush/rudra512/rudra512",
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  }
+}

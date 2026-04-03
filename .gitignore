@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyd
+*.so
+dist/
+build/
+.vscode/
+*.egg-info/
+
+# Node
+node_modules/
+npm-debug.log
+package-lock.json
+
+# C++
+*.exe
+*.out
+*.o
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+
+# OS
+.DS_Store
+Thumbs.db
