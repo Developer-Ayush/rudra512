@@ -30,7 +30,7 @@ Output: a3f1c8...e92b14  (128 hex characters, always)
 
 A simple interactive visualizer to see how Rudra-512 works step by step.
 
-🔗 **Live Demo:** YOUR_LINK_HERE
+🔗 **Live Demo:** [YOUR_LINK_HERE](https://rudra-512-hash.vercel.app)
 
 - Step-by-step rounds  
 - Internal state updates  
