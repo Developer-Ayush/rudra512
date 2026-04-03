@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Rudra-512
 
 A high-performance 512-bit cryptographic hash function implemented in C++ with Python and Node.js bindings.
