@@ -758,6 +758,43 @@
 
 <div class="container">
 
+  <!-- HOW TO USE -->
+  <div class="input-section" style="margin-bottom:32px">
+    <div class="section-label">// How to Use</div>
+    <div class="steps-grid" style="margin-bottom:0">
+      <div class="step-card">
+        <div class="step-num">FIELD 01</div>
+        <div class="step-name">Input Message</div>
+        <div class="step-detail">Type any text you want to hash. Press Enter or click Hash It to compute.<br/><br/>Default: <span style="color:var(--accent2)">"hello"</span></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">FIELD 02</div>
+        <div class="step-name">Rounds</div>
+        <div class="step-detail">Number of permutation rounds applied per block. Higher = slower but stronger mixing. Range: 1–1000.<br/><br/>Default: <span style="color:var(--accent2)">32</span></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">FIELD 03</div>
+        <div class="step-name">Salt (Optional)</div>
+        <div class="step-detail">Prepended to input before hashing. Same input + different salt = completely different hash.<br/><br/>Default: <span style="color:var(--accent2)">none (empty)</span></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">SECTION 04</div>
+        <div class="step-name">Avalanche Demo</div>
+        <div class="step-detail">Enter two similar inputs (e.g. "hello" vs "hellp"). Changed bits highlight in red. Ideal score is ~50%.<br/><br/>Output shown in <span style="color:var(--accent2)">binary</span></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">SECTION 05</div>
+        <div class="step-name">Permutation Stepper</div>
+        <div class="step-detail">Click Step Forward to animate one word-round, or Auto Run to play all rounds. Uses the current input and rounds values.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">OUTPUT</div>
+        <div class="step-name">Hash Output</div>
+        <div class="step-detail">Result is 128 hex chars = 512 bits, split into 8 coloured 64-bit word chunks. Avalanche section shows all 512 bits in binary.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- INPUT -->
   <div class="input-section">
     <div class="section-label">// Interactive Hash Computer</div>
@@ -899,21 +936,22 @@ digest = hex(s[0..7])</div>
     <div class="ava-grid" id="avaGrid" style="display:none">
       <div>
         <div class="ava-box">
-          <div class="ava-box-label">Hash A</div>
-          <div class="ava-hash" id="avaHashA"></div>
+          <div class="ava-box-label">Hash A — Binary</div>
+          <div class="ava-hash" id="avaHashA" style="font-size:9.5px;letter-spacing:0.3px;line-height:2"></div>
         </div>
       </div>
       <div>
         <div class="ava-box">
-          <div class="ava-box-label">Hash B</div>
-          <div class="ava-hash" id="avaHashB"></div>
+          <div class="ava-box-label">Hash B — Binary</div>
+          <div class="ava-hash" id="avaHashB" style="font-size:9.5px;letter-spacing:0.3px;line-height:2"></div>
         </div>
       </div>
     </div>
 
     <div class="ava-score" id="avaScore" style="display:none">
       <div class="ava-pct" id="avaPct">0%</div>
-      <div class="ava-pct-label">bits changed (ideal: ~50%)</div>
+      <div class="ava-pct-label" id="avaBitCount">0 / 512 bits changed</div>
+      <div class="ava-pct-label" style="margin-top:4px">bits changed (ideal: ~50%)</div>
       <div class="ava-bar"><div class="ava-bar-fill" id="avaBarFill" style="width:0%"></div></div>
     </div>
   </div>
@@ -1314,7 +1352,7 @@ function autoRun() {
       autoRunInterval = null;
     }
 
-  }, 10);
+  }, 200);
 }
 
 // ============================================================
@@ -1339,17 +1377,20 @@ function computeAvalanche() {
   for (let i = 0; i < hA.length; i++) {
     const bitsA = parseInt(hA[i], 16).toString(2).padStart(4, '0');
     const bitsB = parseInt(hB[i], 16).toString(2).padStart(4, '0');
-    let hexChanged = false;
     for (let k = 0; k < 4; k++) {
-      if (bitsA[k] !== bitsB[k]) { changed++; hexChanged = true; }
+      if (bitsA[k] !== bitsB[k]) {
+        changed++;
+        aHtml.push(`<span class="bit-changed">${bitsA[k]}</span>`);
+        bHtml.push(`<span class="bit-changed">${bitsB[k]}</span>`);
+      } else {
+        aHtml.push(`<span class="bit-same">${bitsA[k]}</span>`);
+        bHtml.push(`<span class="bit-same">${bitsB[k]}</span>`);
+      }
       total++;
     }
-    if (hexChanged) {
-      aHtml.push(`<span class="bit-changed">${hA[i]}</span>`);
-      bHtml.push(`<span class="bit-changed">${hB[i]}</span>`);
-    } else {
-      aHtml.push(`<span class="bit-same">${hA[i]}</span>`);
-      bHtml.push(`<span class="bit-same">${hB[i]}</span>`);
+    if ((i + 1) % 8 === 0) {
+      aHtml.push('<span style="color:var(--border)"> </span>');
+      bHtml.push('<span style="color:var(--border)"> </span>');
     }
   }
 
@@ -1358,6 +1399,7 @@ function computeAvalanche() {
   document.getElementById('avaHashA').innerHTML = aHtml.join('');
   document.getElementById('avaHashB').innerHTML = bHtml.join('');
   document.getElementById('avaPct').textContent = pct + '%';
+  document.getElementById('avaBitCount').textContent = `${changed} / ${total} bits changed`;
   document.getElementById('avaBarFill').style.width = pct + '%';
 
   document.getElementById('avaGrid').style.display = 'grid';
