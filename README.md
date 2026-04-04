@@ -5,12 +5,11 @@
 **A 512-bit cryptographic hash function — inspired by Lord Shiva, built in C++**
 
 [![npm version](https://badge.fury.io/js/rudra-512-hash.svg)](https://www.npmjs.com/package/rudra-512-hash)
+[![Live Demo](https://img.shields.io/badge/Web-Visualizer-purple)](https://rudra-512-hash.vercel.app/)
+[![C++](https://img.shields.io/badge/Core-C%2B%2B17-blue)](https://github.com/Developer-Ayush/rudra512)
 [![PyPI version](https://badge.fury.io/py/rudra-512-hash.svg)](https://pypi.org/project/rudra-512-hash/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![C++](https://img.shields.io/badge/Core-C%2B%2B17-blue)](https://github.com/Developer-Ayush/rudra512)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-yellow)](https://pypi.org/project/rudra-512-hash/)
-[![Node.js](https://img.shields.io/badge/Node.js-12%2B-green)](https://www.npmjs.com/package/rudra-512-hash)
-[![Live Demo](https://img.shields.io/badge/Web-Visualizer-purple)](https://rudra-512-hash.vercel.app/)
+
 
 </div>
 
@@ -385,11 +384,11 @@ const digest = rudra.hash(masterSecret, 128, hsmSalt);
 
 > ⚠️ **Note:** Results below were recorded on a single system at a specific point in time. Performance varies by CPU, OS, system load, and compiler version. These numbers are provided for relative comparison only — run `benchmark.py` to get results for your own environment.
 
-| Algorithm | Frequency | Entropy | Avalanche | Speed (hashes/sec) | Collisions |
-|---|---|---|---|---|---|
-| **Rudra-512** | 49.89% | 0.999997 | **50.18%** | 117,536 | None |
-| SHA-512 | 49.71% | 0.999977 | 49.72% | 459,841 | None |
-| SHA3-512 | 49.81% | 0.999990 | 50.14% | 427,948 | None |
+| Algorithm |Runs| Frequency | Entropy | Avalanche | Speed (hashes/sec) | Collisions |
+|-----------|----|-----------|---------|-----------|----------------------|----------|
+| **Rudra-512** |**0.501270**| **50.0254%** | **1.000000** | **50.1301%** | **161,973** | **None** |
+| SHA-512 |0.502109| 49.7373% | 0.999980 | 49.7192% | 860,149 | None |
+| SHA3-512 |0.496582| 0.496582 | 1.000000 | 50.1404% | 653,170 | None |
 
 **Metric guide:**
 
@@ -713,7 +712,7 @@ Contributions are welcome! For significant changes, please open an issue first t
 
 ## Changelog
 
-### v1.0.0
+### v2.0.0
 
 - Initial release
 - Python bindings via pybind11 (`hash_string`, `hash_file`)
