@@ -157,4 +157,4 @@ Licensed under the Apache License 2.0.
 
 ## 🚀 Version
 
-Current version: **2.0.0**
+Current version: **3.0.0**
