@@ -1061,7 +1061,7 @@ function toggleAuto() {
   if (!ST.steps.length) initStepper();
   if (ST.done) return;
   document.getElementById('btnAuto').textContent = 'Pause';
-  ST.auto = setInterval(() => { if (ST.done) { stopAuto(); return; } stepFwd(); }, 60);
+  ST.auto = setInterval(() => { if (ST.done) { stopAuto(); return; } stepFwd(); }, 200);
 }
 
 // ════════════════════════════════════════════════════════════
