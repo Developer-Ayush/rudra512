@@ -1,7 +1,7 @@
 import sys
 from . import hash_string, hash_file
 
-VERSION = "2.0.0"
+VERSION = "3.0.0"
 
 
 def print_help():

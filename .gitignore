@@ -8,6 +8,8 @@ build/
 .vscode/
 *.egg-info/
 
+.github
+
 # Node
 node_modules/
 npm-debug.log

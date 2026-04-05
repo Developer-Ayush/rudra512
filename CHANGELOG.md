@@ -7,7 +7,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [2.0.0] — 2026
+## [3.0.0] — 2026
 
 ### Added
 - Core C++17 512-bit hash implementation (`Rudra512.cpp`)
