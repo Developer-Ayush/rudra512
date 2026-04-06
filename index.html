@@ -535,23 +535,17 @@ footer {
 
 <!-- Hero Section -->
 <header>
-  <div class="hero-om">ॐ</div>
-  <div class="badge">
-    <span class="badge-icon">🔱</span> Architecture v4 Parity <span class="badge-icon">🔱</span>
-  </div>
-  <h1>RUDRA<span class="h1-sub">512</span></h1>
-  <div class="hero-subtitle">The Divine Edition</div>
-  <p class="hero-desc">
-    Forged in the fires of Kailash. Featuring <span>Scattered Salt Injection</span> <span class="dot">·</span> 
-    <span>Tokenization Pipeline</span> <span class="dot">·</span> <span>SipHash Mixer</span> <span class="dot">·</span> 
-    <span>Full-Round Whitening</span>. A 512-bit cryptographic hash function designed to withstand the tests of time and compute.
-  </p>
-
-  <div class="stats-container">
-    <div class="stat-box"><span class="stat-val">512</span><span class="stat-lbl">Bit Digest</span></div>
-    <div class="stat-box"><span class="stat-val">8×64</span><span class="stat-lbl">State Words</span></div>
-    <div class="stat-box"><span class="stat-val">32</span><span class="stat-lbl">Default Rounds</span></div>
-    <div class="stat-box"><span class="stat-val">~50%</span><span class="stat-lbl">Avalanche</span></div>
+  <div class="badge float-label">512-bit · Custom Cryptographic Hash · v3 Hardened · 3D Edition</div>
+  <h1>
+    <span class="rudra">RUDRA</span><span class="dash">-</span><span class="num">512</span>
+  </h1>
+  <p class="subtitle">// Inspired by Lord Shiva · Built in C++ · 512-bit digest · BPE Tokenization · Embedded Salt · Asymmetric Rotations</p>
+  <div class="stats-row">
+    <div class="stat"><span class="stat-val">512</span><span class="stat-lbl">Bit Output</span></div>
+    <div class="stat"><span class="stat-val">8×64</span><span class="stat-lbl">State Words</span></div>
+    <div class="stat"><span class="stat-val">32</span><span class="stat-lbl">Default Rounds</span></div>
+    <div class="stat"><span class="stat-val">~50%</span><span class="stat-lbl">Avalanche</span></div>
+    <div class="stat"><span class="stat-val">128</span><span class="stat-lbl">Hex Chars</span></div>
   </div>
 </header>
 
@@ -1473,9 +1467,17 @@ function renderStepperGrid(state, hIdx) {
   });
 }
 
-function updateStepLabels(phase, op) {
-  document.getElementById('lblPhase').textContent = phase;
-  document.getElementById('lblOp').textContent = op;
+function stopAuto() {
+  if (ST.auto) { clearInterval(ST.auto); ST.auto = null; }
+  document.getElementById('btnAuto').textContent = 'Auto Run';
+}
+
+function toggleAuto() {
+  if (ST.auto) { stopAuto(); return; }
+  if (!ST.steps.length) initStepper();
+  if (ST.done) return;
+  document.getElementById('btnAuto').textContent = 'Pause';
+  ST.auto = setInterval(() => { if (ST.done) { stopAuto(); return; } stepFwd(); }, 60);
 }
 
 /* ═════════════════════════════════════════════════════════════
