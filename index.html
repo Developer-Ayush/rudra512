@@ -1,842 +1,1298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Rudra-512</title>
-<link rel="icon" type="image/png" href="favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>RUDRA-512 · The Divine Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
+/* ═════════════════════════════════════════════════════════════
+   THE ROYAL DIVINE PALETTE — MAHADEV'S AURA
+═════════════════════════════════════════════════════════════ */
 :root {
-  --bg: #050508;
-  --surface: #0a0a12;
-  --card: #0f0f1c;
-  --border: #1a1a2e;
-  --accent: #ff4d00;
-  --accent2: #ff8c42;
-  --gold: #f5c842;
-  --text: #e8e8f0;
-  --muted: #5a5a7a;
-  --green: #00e5a0;
-  --blue: #4d9fff;
-  --purple: #9b6dff;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+  --void: #030108;            /* Deepest cosmic space */
+  --obsidian: rgba(12, 8, 20, 0.75); /* Dark polished stone */
+  --obsidian-hover: rgba(20, 15, 35, 0.85);
+  
+  /* Sacred Gold */
+  --gold-light: #FFEA99;
+  --gold-base: #D4AF37;
+  --gold-dark: #996515;
+  --gold-glow: rgba(212, 175, 55, 0.4);
+  --gold-border: rgba(212, 175, 55, 0.5);
 
-/* 3D Canvas Background */
-#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  /* Bhasma (Holy Ash) & Texts */
+  --ash-pure: #F5F5F5;
+  --ash-muted: #A8A0A5;
+  --ash-dark: #635C65;
 
-/* Radial glow overlay */
-.glow-orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
-.orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(255,77,0,0.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);}
-.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(155,109,255,0.08) 0%,transparent 70%);bottom:20%;right:-100px;}
-.orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(0,229,160,0.06) 0%,transparent 70%);top:40%;left:-80px;}
+  /* Divine Energies */
+  --kailash-blue: #88C0D0;    /* Glacial ice */
+  --third-eye: #D32F2F;       /* Crimson wrath */
+  --ganga-cyan: #00E5FF;      /* Sacred water */
 
-.wrapper{position:relative;z-index:1;}
-
-/* HEADER */
-header{text-align:center;padding:100px 20px 70px;position:relative;}
-.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(255,77,0,0.3);padding:6px 18px;border-radius:2px;margin-bottom:28px;background:rgba(255,77,0,0.06);backdrop-filter:blur(10px);}
-
-h1{font-size:clamp(60px,9vw,120px);font-weight:800;line-height:0.88;letter-spacing:-4px;margin-bottom:12px;perspective:800px;}
-h1 .rudra{display:inline-block;background:linear-gradient(135deg,#fff 0%,#a0a0c0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transform:translateZ(0);}
-h1 .dash{color:var(--accent);-webkit-text-fill-color:var(--accent);}
-h1 .num{color:var(--accent2);-webkit-text-fill-color:var(--accent2);}
-
-.subtitle{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:22px;letter-spacing:1px;}
-
-.stats-row{display:flex;justify-content:center;gap:48px;margin-top:48px;flex-wrap:wrap;}
-.stat{text-align:center;transition:transform .3s;}
-.stat:hover{transform:translateY(-4px);}
-.stat-val{font-size:32px;font-weight:800;color:var(--accent);display:block;text-shadow:0 0 30px rgba(255,77,0,0.4);}
-.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
-
-/* 3D PANEL */
-.container{max-width:1140px;margin:0 auto;padding:0 24px 120px;}
-.panel{
-  background:rgba(15,15,28,0.85);
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:36px;
-  margin-bottom:36px;
-  position:relative;
-  overflow:hidden;
-  backdrop-filter:blur(20px);
-  transform-style:preserve-3d;
-  transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s;
-}
-.panel:hover{
-  transform:perspective(1200px) rotateX(1.5deg) rotateY(-0.8deg) translateY(-4px);
-  box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 60px rgba(255,77,0,0.06);
-}
-.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.panel.orange::before{background:linear-gradient(90deg,var(--accent),var(--accent2),transparent);}
-.panel.purple::before{background:linear-gradient(90deg,var(--purple),var(--blue),transparent);}
-.panel.gold::before{background:linear-gradient(90deg,var(--gold),var(--accent2),transparent);}
-.panel.green::before{background:linear-gradient(90deg,var(--green),var(--blue),transparent);}
-
-/* Inner 3D shimmer */
-.panel::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,0.03) 0%,transparent 50%,rgba(255,255,255,0.015) 100%);
-  pointer-events:none;
+  --transition: all 0.6s cubic-bezier(0.25, 1, 0.15, 1);
+  --fast-trans: all 0.3s ease;
 }
 
-.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;}
-.section-title{font-size:22px;font-weight:700;margin-bottom:6px;}
-.section-desc{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.7;}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
-/* INPUTS */
-.input-row{display:flex;gap:12px;flex-wrap:wrap;}
-.input-group{flex:1;min-width:180px;}
-label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-input[type="text"],input[type="number"]{width:100%;background:rgba(10,10,18,0.9);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;padding:13px 16px;outline:none;transition:border-color .2s,box-shadow .2s;}
-input:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(255,77,0,0.15);}
-
-.btn-hash{
-  align-self:flex-end;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;border:none;border-radius:3px;
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  padding:13px 36px;cursor:pointer;
-  transition:all .25s;
-  box-shadow:0 4px 20px rgba(255,77,0,0.3);
-  white-space:nowrap;position:relative;overflow:hidden;
+body {
+  background: var(--void);
+  color: var(--ash-pure);
+  font-family: 'Cinzel', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
-.btn-hash::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);opacity:0;transition:opacity .2s;}
-.btn-hash:hover::before{opacity:1;}
-.btn-hash:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,77,0,0.45);}
-.btn-hash:active{transform:scale(0.97);}
 
-/* OUTPUT */
-.output-box{margin-top:24px;background:rgba(10,10,18,0.95);border:1px solid var(--border);border-radius:3px;padding:22px;display:none;}
-.output-box.show{display:block;}
-.output-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
-.hash-output{font-family:'JetBrains Mono',monospace;font-size:13px;word-break:break-all;line-height:1.8;}
-.hash-chunk:nth-child(1){color:#ff6b6b;}
-.hash-chunk:nth-child(2){color:#ffd93d;}
-.hash-chunk:nth-child(3){color:#6bcb77;}
-.hash-chunk:nth-child(4){color:#4d96ff;}
-.hash-chunk:nth-child(5){color:#ff6bdb;}
-.hash-chunk:nth-child(6){color:#ff9a3c;}
-.hash-chunk:nth-child(7){color:#a0e7e5;}
-.hash-chunk:nth-child(8){color:#b4f8c8;}
-
-/* STEPS GRID */
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;}
-.step-card{
-  background:rgba(10,10,18,0.8);border:1px solid var(--border);border-radius:4px;padding:24px;
-  position:relative;overflow:hidden;
-  transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .35s;
-  transform-style:preserve-3d;
+/* ─── CUSTOM CURSOR (Hidden on Mobile) ─── */
+@media (min-width: 1024px) {
+  body { cursor: none; }
+  #cur {
+    position: fixed; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold-light); pointer-events: none; z-index: 99999;
+    box-shadow: 0 0 15px var(--gold-base), 0 0 30px var(--gold-light);
+    transition: transform 0.1s; mix-blend-mode: screen;
+  }
+  #cur-ring {
+    position: fixed; width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--gold-border); pointer-events: none; z-index: 99998;
+    box-shadow: 0 0 20px var(--gold-glow);
+    transition: width 0.4s, height 0.4s, opacity 0.4s, border-color 0.4s;
+  }
+  body.hovering #cur { transform: scale(2.5); background: var(--third-eye); box-shadow: 0 0 20px var(--third-eye); }
+  body.hovering #cur-ring { width: 60px; height: 60px; border-color: var(--gold-base); }
+  body.text-hover #cur { transform: scale(0.5); background: var(--ganga-cyan); }
+  body.text-hover #cur-ring { opacity: 0; }
 }
-.step-card:hover{
-  transform:perspective(800px) rotateX(2deg) rotateY(-1.5deg) translateY(-6px) scale(1.01);
-  border-color:rgba(255,77,0,0.35);
-  box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 30px rgba(255,77,0,0.08);
+
+/* ─── BACKGROUNDS & CANVAS ─── */
+#canvas-container { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.vignette {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  background: radial-gradient(circle at center, transparent 30%, #030108 100%);
 }
-.step-num{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:12px;}
-.step-name{font-size:16px;font-weight:700;margin-bottom:8px;}
-.step-detail{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.7;}
-.step-code{margin-top:12px;background:rgba(5,5,8,0.9);border-radius:2px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);line-height:1.6;white-space:pre-wrap;word-break:break-all;border-left:2px solid rgba(77,159,255,0.3);}
-
-/* STATE GRID */
-.state-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px;}
-@media(max-width:600px){.state-grid{grid-template-columns:repeat(2,1fr);}}
-.word-box{background:rgba(10,10,18,0.9);border:1px solid var(--border);border-radius:3px;padding:14px;text-align:center;transition:all .3s;}
-.word-box.changed{border-color:var(--accent);background:rgba(255,77,0,0.08);animation:pulse3d .5s ease;}
-@keyframes pulse3d{0%{transform:scale(1) translateZ(0);}50%{transform:scale(1.05) translateZ(10px);}100%{transform:scale(1) translateZ(0);}}
-.word-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;}
-.word-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);word-break:break-all;line-height:1.4;}
-
-/* PERMUTATION STEPPER */
-.perm-controls{display:flex;gap:12px;align-items:center;margin:20px 0;flex-wrap:wrap;}
-.btn-sm{background:transparent;border:1px solid var(--border);color:var(--text);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:8px 20px;border-radius:3px;cursor:pointer;transition:all .2s;}
-.btn-sm:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 15px rgba(255,77,0,0.15);}
-.btn-sm.primary{background:rgba(255,77,0,0.1);border-color:var(--accent);color:var(--accent);}
-.btn-sm:disabled{opacity:.3;cursor:not-allowed;pointer-events:none;}
-.round-counter{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-left:auto;}
-.round-counter span{color:var(--accent);}
-
-.flow-diagram{background:rgba(10,10,18,0.9);border-radius:3px;padding:24px;margin-top:16px;overflow-x:hidden;min-height:80px;border:1px solid var(--border);}
-.flow-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
-.flow-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);width:36px;text-align:right;flex-shrink:0;}
-.flow-box{background:var(--card);border:1px solid var(--border);border-radius:2px;padding:5px 9px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);white-space:nowrap;flex-shrink:0;}
-.flow-op{color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;flex-shrink:0;}
-.flow-arrow{color:var(--muted);font-size:14px;flex-shrink:0;}
-.flow-result{background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.3);color:var(--green);}
-.flow-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);flex-shrink:0;}
-.phase-badge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:2px;background:rgba(255,77,0,0.15);border:1px solid rgba(255,77,0,0.3);color:var(--accent2);margin-bottom:8px;display:inline-block;}
-
-/* AVALANCHE */
-.ava-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;}
-@media(max-width:600px){.ava-grid{grid-template-columns:1fr;}}
-.ava-box{background:rgba(10,10,18,0.9);border-radius:3px;padding:16px;border:1px solid var(--border);}
-.ava-box-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;}
-.ava-hash{font-family:'JetBrains Mono',monospace;font-size:9.5px;word-break:break-all;line-height:2;letter-spacing:.3px;}
-.bit-changed{color:var(--accent);font-weight:600;}
-.bit-same{color:var(--muted);}
-.ava-score{margin-top:20px;text-align:center;}
-.ava-pct{font-size:52px;font-weight:800;color:var(--green);text-shadow:0 0 40px rgba(0,229,160,0.3);}
-.ava-pct-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;}
-.ava-bar{height:6px;background:var(--border);border-radius:3px;margin:12px auto;max-width:300px;overflow:hidden;}
-.ava-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:3px;transition:width .6s ease;}
-
-/* TABLE */
-table{width:100%;border-collapse:collapse;margin-top:20px;}
-th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);}
-td{font-family:'JetBrains Mono',monospace;font-size:12px;padding:12px 16px;border-bottom:1px solid rgba(26,26,46,0.5);}
-tr:hover td{background:rgba(255,77,0,0.03);}
-.algo-rudra td:first-child{color:var(--accent);font-weight:600;}
-.good{color:var(--green);}
-.neutral{color:var(--text);}
-
-/* PADDING VISUAL */
-.padding-visual{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px;}
-.byte-cell{width:28px;height:28px;border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;transition:all .3s;}
-.byte-msg{background:rgba(77,159,255,0.2);border:1px solid rgba(77,159,255,0.4);color:var(--blue);}
-.byte-salt{background:rgba(155,109,255,0.2);border:1px solid rgba(155,109,255,0.4);color:var(--purple);}
-.byte-pad{background:rgba(255,77,0,0.15);border:1px solid rgba(255,77,0,0.3);color:var(--accent);}
-.byte-zero{background:rgba(107,107,138,0.1);border:1px solid rgba(107,107,138,0.2);color:var(--muted);}
-.byte-len{background:rgba(245,200,66,0.15);border:1px solid rgba(245,200,66,0.3);color:var(--gold);}
-
-/* TAGS */
-.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 10px;border-radius:2px;background:rgba(255,77,0,0.1);border:1px solid rgba(255,77,0,0.2);color:var(--accent);letter-spacing:1px;margin-right:6px;margin-bottom:6px;transition:all .2s;}
-.tag:hover{background:rgba(255,77,0,0.2);border-color:rgba(255,77,0,0.5);transform:translateY(-1px);}
-
-/* FOOTER */
-footer{text-align:center;padding:50px 20px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
-footer a{color:var(--accent);text-decoration:none;}
-
-/* 3D floating label animation */
-@keyframes float3d{
-  0%,100%{transform:translateY(0) translateZ(0);}
-  50%{transform:translateY(-8px) translateZ(5px);}
+.noise-overlay {
+  position: fixed; inset: 0; z-index: 3; pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
-.float-label{animation:float3d 6s ease-in-out infinite;}
 
-/* Scan line */
-@keyframes scanline{0%{top:-10%;}100%{top:110%;}}
-.scanline{position:fixed;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(255,77,0,0.08),transparent);animation:scanline 8s linear infinite;pointer-events:none;z-index:1000;}
+/* Sacred Yantra Background */
+.mandala-bg {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; opacity: 0.08;
+}
+.mandala-bg svg {
+  width: max(120vw, 120vh); height: max(120vw, 120vh);
+  animation: slowSpin 180s linear infinite;
+  filter: drop-shadow(0 0 20px var(--gold-base));
+}
+@keyframes slowSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Cosmic Orbs */
+.orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 1; filter: blur(120px); mix-blend-mode: screen; }
+.orb-gold { width: 800px; height: 800px; background: radial-gradient(circle, rgba(212,175,55,0.08), transparent 60%); top: -200px; left: -200px; animation: drift 20s ease-in-out infinite alternate; }
+.orb-blue { width: 600px; height: 600px; background: radial-gradient(circle, rgba(136,192,208,0.06), transparent 60%); bottom: -100px; right: -100px; animation: drift 25s ease-in-out infinite alternate-reverse; }
+@keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(50px, -50px) scale(1.1); } }
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%; height: 80px;
+  background: rgba(3, 1, 8, 0.6);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gold-border);
+}
+.nav-logo {
+  font-family: 'Cinzel Decorative', serif; font-size: 22px; font-weight: 700; letter-spacing: 6px;
+  background: linear-gradient(to right, var(--gold-light), var(--gold-base));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none;
+  filter: drop-shadow(0 0 10px var(--gold-glow));
+}
+.nav-links { display: flex; gap: 20px; align-items: center; }
+.nav-link {
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--ash-muted); text-decoration: none; transition: var(--fast-trans);
+}
+.nav-link:hover { color: var(--gold-light); text-shadow: 0 0 10px var(--gold-base); }
+.nav-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px;
+  padding: 8px 16px; border-radius: 4px; border: 1px solid var(--gold-base);
+  color: var(--gold-light); text-decoration: none; background: rgba(212,175,55,0.05);
+  transition: var(--transition);
+}
+.nav-btn:hover { background: var(--gold-glow); box-shadow: 0 0 20px var(--gold-glow); transform: translateY(-2px); }
+
+/* ─── HERO SECTION ─── */
+header {
+  position: relative; min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; padding: 120px 20px 60px;
+  z-index: 10; transform-style: preserve-3d; perspective: 1000px;
+}
+.hero-om {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(-100px);
+  font-size: clamp(200px, 40vw, 600px); color: transparent;
+  -webkit-text-stroke: 1px rgba(212, 175, 55, 0.05);
+  font-family: 'Cinzel Decorative', serif; line-height: 1; pointer-events: none; z-index: -1;
+  animation: pulseOm 8s ease-in-out infinite alternate; user-select: none;
+}
+@keyframes pulseOm { from { opacity: 0.3; transform: translate(-50%, -50%) translateZ(-100px) scale(0.95); } to { opacity: 0.8; transform: translate(-50%, -50%) translateZ(-100px) scale(1.05); } }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--gold-light);
+  padding: 8px 24px; border-radius: 50px; border: 1px solid var(--gold-border);
+  background: var(--obsidian); box-shadow: 0 0 20px var(--gold-glow), inset 0 2px 5px rgba(255,255,255,0.1);
+  margin-bottom: 40px; animation: fadeUp 1s ease-out forwards; opacity: 0;
+  transform: translateZ(20px);
+}
+.badge-icon { color: var(--third-eye); font-size: 14px; text-shadow: 0 0 10px var(--third-eye); }
+
+h1 {
+  font-family: 'Cinzel Decorative', serif; font-size: clamp(48px, 10vw, 140px);
+  font-weight: 900; letter-spacing: clamp(5px, 2vw, 20px);
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--gold-light) 40%, var(--gold-base) 80%, var(--gold-dark) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8)) drop-shadow(0 0 40px var(--gold-glow));
+  margin-bottom: 10px; opacity: 0; animation: fadeUp 1s 0.2s ease-out forwards;
+  transform: translateZ(40px);
+}
+.h1-sub { font-size: 0.5em; color: var(--kailash-blue); -webkit-text-fill-color: initial; vertical-align: super; text-shadow: 0 0 20px rgba(136,192,208,0.5); }
+
+.hero-subtitle {
+  font-family: 'Cinzel', serif; font-size: clamp(14px, 2vw, 20px); letter-spacing: 8px;
+  color: var(--gold-base); text-transform: uppercase; margin-bottom: 24px;
+  opacity: 0; animation: fadeUp 1s 0.4s ease-out forwards;
+  transform: translateZ(30px);
+}
+.hero-desc {
+  font-family: 'JetBrains Mono', monospace; font-size: clamp(11px, 1.5vw, 13px);
+  color: var(--ash-muted); line-height: 2; letter-spacing: 1px; max-width: 800px;
+  opacity: 0; animation: fadeUp 1s 0.6s ease-out forwards;
+  transform: translateZ(20px);
+}
+.hero-desc span { color: var(--gold-light); text-shadow: 0 0 10px var(--gold-glow); }
+.hero-desc .dot { margin: 0 10px; color: var(--ash-dark); }
+
+/* Stats Row */
+.stats-container {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-top: 60px;
+  opacity: 0; animation: fadeUp 1s 0.8s ease-out forwards;
+  transform-style: preserve-3d;
+}
+.stat-box {
+  background: var(--obsidian); border: 1px solid var(--gold-border);
+  padding: 24px 32px; border-radius: 8px; min-width: 160px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px var(--gold-glow);
+  position: relative; overflow: hidden; transition: var(--transition);
+  transform: translateZ(10px);
+}
+.stat-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-base), transparent);
+}
+.stat-box:hover { transform: translateY(-5px) translateZ(20px); box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 0 25px rgba(212,175,55,0.3); border-color: var(--gold-light); }
+.stat-val {
+  display: block; font-family: 'Cinzel Decorative', serif; font-size: 32px; font-weight: 700;
+  color: var(--gold-light); margin-bottom: 8px; text-shadow: 0 0 15px var(--gold-glow);
+}
+.stat-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ash-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px) translateZ(0); } to { opacity: 1; transform: translateY(0) translateZ(0); } }
+
+/* ─── MAIN LAYOUT ─── */
+.wrapper { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 0 20px 100px; perspective: 1200px; }
+
+/* ─── ROYAL PANELS (3D Enhanced) ─── */
+.royal-panel {
+  background: var(--obsidian);
+  border: 1px solid var(--gold-border);
+  border-radius: 16px;
+  padding: 50px;
+  margin-bottom: 40px;
+  position: relative;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(212,175,55,0.08), inset 0 2px 2px rgba(255,255,255,0.1);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  transform-style: preserve-3d;
+}
+.royal-panel::after {
+  content: ''; position: absolute; inset: -1px; border-radius: 16px;
+  background: linear-gradient(135deg, var(--gold-base) 0%, transparent 30%, transparent 70%, var(--gold-dark) 100%);
+  z-index: -1; opacity: 0.5; pointer-events: none;
+}
+.royal-panel:hover {
+  box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 0 30px rgba(212,175,55,0.2), inset 0 2px 4px rgba(255,255,255,0.2);
+  border-color: rgba(212,175,55,0.8);
+}
+.panel-tag {
+  display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--gold-base); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px;
+  border-bottom: 1px solid var(--gold-border); padding-bottom: 6px; transform: translateZ(30px);
+}
+.panel-title {
+  font-family: 'Cinzel Decorative', serif; font-size: clamp(24px, 4vw, 36px); font-weight: 700;
+  color: var(--ash-pure); margin-bottom: 12px; text-shadow: 0 5px 15px rgba(0,0,0,0.8);
+  transform: translateZ(40px);
+}
+.panel-desc {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ash-muted);
+  line-height: 1.8; margin-bottom: 40px; max-width: 800px; transform: translateZ(30px);
+}
+
+/* ─── INPUTS & BUTTONS ─── */
+.input-grid { display: grid; grid-template-columns: 2fr 1fr 2fr auto; gap: 20px; align-items: end; transform: translateZ(20px); }
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.input-group label {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold-base);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+input[type="text"], input[type="number"] {
+  background: rgba(0, 0, 5, 0.6);
+  border: 1px solid var(--gold-border);
+  border-radius: 8px; padding: 16px 20px;
+  font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--gold-light);
+  outline: none; transition: var(--fast-trans);
+  box-shadow: inset 0 4px 12px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.5);
+}
+input[type="text"]:focus, input[type="number"]:focus {
+  border-color: var(--gold-light); background: rgba(10, 8, 15, 0.8);
+  box-shadow: inset 0 4px 12px rgba(0,0,0,0.8), 0 0 20px var(--gold-glow);
+  transform: translateY(-2px);
+}
+input::placeholder { color: var(--ash-dark); }
+
+.btn-royal {
+  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(153,101,21,0.2));
+  border: 1px solid var(--gold-base); border-radius: 8px;
+  color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 4px; text-transform: uppercase; padding: 16px 40px;
+  cursor: pointer; transition: var(--transition);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.2), inset 0 -4px 10px rgba(0,0,0,0.4);
+  position: relative; overflow: hidden; transform-style: preserve-3d;
+}
+.btn-royal::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-25deg); transition: left 0.7s ease;
+}
+.btn-royal:hover::before { left: 200%; }
+.btn-royal:hover {
+  background: linear-gradient(135deg, rgba(212,175,55,0.4), rgba(153,101,21,0.4));
+  box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 40px var(--gold-glow), inset 0 2px 4px rgba(255,255,255,0.4);
+  transform: translateY(-4px) translateZ(10px); text-shadow: 0 0 15px var(--gold-light);
+  border-color: var(--gold-light);
+}
+
+/* ─── OUTPUT BOX ─── */
+.output-container {
+  margin-top: 40px; background: rgba(0, 0, 5, 0.85);
+  border: 1px solid var(--gold-base); border-radius: 12px;
+  padding: 40px; display: none; position: relative;
+  box-shadow: inset 0 10px 30px rgba(0,0,0,0.9), 0 0 50px var(--gold-glow);
+  transform: translateZ(25px);
+}
+.output-container.show { display: block; animation: materialize 0.8s ease-out; }
+@keyframes materialize { from { opacity: 0; transform: scale(0.95) translateZ(0px); filter: blur(10px); } to { opacity: 1; transform: scale(1) translateZ(25px); filter: blur(0); } }
+
+.hash-string {
+  font-family: 'JetBrains Mono', monospace; font-size: clamp(14px, 2vw, 18px);
+  color: var(--gold-light); letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(212,175,55,0.5);
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;
+}
+.hash-chunk { 
+  display: inline-block; transition: var(--fast-trans); cursor: crosshair; 
+  background: rgba(255,255,255,0.02); padding: 4px 8px; border-radius: 4px;
+  border: 1px solid rgba(212,175,55,0.1);
+}
+.hash-chunk:hover { background: var(--gold-glow); border-color: var(--gold-base); transform: scale(1.1) translateZ(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+
+.meta-info {
+  display: flex; gap: 30px; margin-top: 30px; padding-top: 20px;
+  border-top: 1px solid rgba(212,175,55,0.3); flex-wrap: wrap; justify-content: center;
+}
+.meta-item { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ash-muted); display: flex; align-items: center; gap: 8px; }
+.meta-item span:first-child { color: var(--gold-base); font-size: 16px; filter: drop-shadow(0 0 5px var(--gold-glow)); }
+
+/* ─── ALGORITHM MANDALA (STEPS) ─── */
+.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.step-card {
+  background: rgba(10, 5, 15, 0.6); border: 1px solid rgba(212,175,55,0.15);
+  border-radius: 12px; padding: 30px; position: relative; overflow: hidden;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; backdrop-filter: blur(10px);
+  transform-style: preserve-3d;
+}
+.step-card:hover {
+  background: rgba(20, 10, 30, 0.8); border-color: var(--gold-base);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(212,175,55,0.15);
+}
+.step-num {
+  font-family: 'Cinzel', serif; font-size: 50px; font-weight: 900;
+  color: transparent; -webkit-text-stroke: 1px rgba(212,175,55,0.2);
+  position: absolute; top: 10px; right: 20px; z-index: 0; transition: var(--transition);
+}
+.step-card:hover .step-num { -webkit-text-stroke: 1px rgba(212,175,55,0.8); text-shadow: 0 0 30px var(--gold-glow); transform: translateZ(20px); }
+.step-header { position: relative; z-index: 1; margin-bottom: 16px; transform: translateZ(15px); }
+.step-badge {
+  display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  background: var(--gold-glow); color: var(--gold-light); padding: 4px 8px;
+  border-radius: 4px; border: 1px solid var(--gold-border); margin-bottom: 12px; letter-spacing: 2px;
+}
+.step-title { font-family: 'Cinzel', serif; font-size: 20px; color: var(--ash-pure); font-weight: 600; margin-bottom: 10px; transform: translateZ(20px); }
+.step-desc { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ash-muted); line-height: 1.8; transform: translateZ(10px); }
+.step-code {
+  margin-top: 20px; background: rgba(0,0,0,0.8); padding: 16px; border-radius: 6px;
+  border-left: 3px solid var(--gold-base); font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--gold-light); white-space: pre-wrap; line-height: 1.8;
+  box-shadow: inset 0 5px 15px rgba(0,0,0,0.8); transform: translateZ(25px);
+}
+
+/* ─── STATE GRID ─── */
+.state-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 30px; transform: translateZ(20px); }
+.state-word {
+  background: rgba(5, 5, 10, 0.8); border: 1px solid rgba(212,175,55,0.2);
+  padding: 24px; border-radius: 8px; text-align: center; transition: var(--transition);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.4);
+}
+.state-word:hover { border-color: var(--gold-base); box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px var(--gold-glow); transform: translateY(-5px) scale(1.05); }
+.state-word.highlight { border-color: var(--third-eye); box-shadow: 0 0 30px rgba(211,47,47,0.5), inset 0 0 15px rgba(211,47,47,0.3); animation: pulseWord 0.6s ease; }
+@keyframes pulseWord { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.word-lbl { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold-base); margin-bottom: 10px; letter-spacing: 2px; }
+.word-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ash-pure); font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+/* ─── PADDING VIZ ─── */
+.pad-viz { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; transform: translateZ(20px); }
+.pad-byte {
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; border-radius: 6px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: var(--fast-trans);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+}
+.pad-byte:hover { transform: translateY(-8px) scale(1.3); z-index: 10; box-shadow: 0 15px 30px rgba(0,0,0,0.9); }
+.b-msg { background: rgba(136,192,208,0.15); border-color: var(--kailash-blue); color: var(--kailash-blue); }
+.b-salt { background: rgba(212,175,55,0.15); border-color: var(--gold-base); color: var(--gold-light); }
+.b-pad { background: rgba(211,47,47,0.15); border-color: var(--third-eye); color: #FF8A80; }
+.b-zero { color: var(--ash-dark); }
+.b-len { background: rgba(0,229,255,0.1); border-color: var(--ganga-cyan); color: var(--ganga-cyan); }
+.legend { display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap; transform: translateZ(10px); }
+.legend-item { display: flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ash-muted); text-transform: uppercase; letter-spacing: 1px; }
+.legend-box { width: 16px; height: 16px; border-radius: 4px; }
+
+/* ─── STEPPER CONTROLS ─── */
+.controls-bar { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 30px; transform: translateZ(30px); }
+.btn-sm {
+  background: rgba(0,0,0,0.5); border: 1px solid var(--gold-border); border-radius: 6px;
+  color: var(--ash-pure); font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  padding: 12px 24px; cursor: pointer; transition: var(--transition); text-transform: uppercase;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.4);
+}
+.btn-sm:hover:not(:disabled) { background: var(--gold-glow); border-color: var(--gold-light); color: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.6), 0 0 15px var(--gold-glow); }
+.btn-sm:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: none; }
+.step-display {
+  margin-left: auto; background: rgba(0,0,0,0.8); padding: 14px 24px; border-radius: 6px;
+  border: 1px solid rgba(212,175,55,0.3); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gold-light);
+  box-shadow: inset 0 4px 10px rgba(0,0,0,0.8); letter-spacing: 1px;
+}
+.flow-box {
+  background: rgba(5,2,10,0.9); border: 1px solid var(--gold-border); border-radius: 12px;
+  padding: 30px; margin-bottom: 30px; min-height: 140px; overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ash-pure); line-height: 2.2;
+  box-shadow: inset 0 10px 30px rgba(0,0,0,0.9); transform: translateZ(15px);
+}
+
+/* ─── AVALANCHE ─── */
+.ava-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px; transform: translateZ(20px); }
+.ava-card { background: rgba(0,0,0,0.7); border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; padding: 30px; box-shadow: inset 0 5px 20px rgba(0,0,0,0.8); transition: transform 0.2s ease-out; transform-style: preserve-3d; }
+.ava-card:hover { border-color: var(--gold-base); box-shadow: inset 0 5px 20px rgba(0,0,0,0.8), 0 15px 40px rgba(0,0,0,0.6); }
+.ava-title { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--gold-base); margin-bottom: 20px; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px; transform: translateZ(15px); }
+.ava-bin { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2.2; word-break: break-all; transform: translateZ(10px); }
+.bit-diff { color: var(--third-eye); font-weight: 900; text-shadow: 0 0 15px rgba(211,47,47,0.9); font-size: 15px; }
+.bit-same { color: var(--ash-dark); }
+.ava-score { margin-top: 40px; text-align: center; padding: 50px; background: rgba(20,10,20,0.8); border-radius: 16px; border: 1px solid rgba(211,47,47,0.4); box-shadow: inset 0 0 50px rgba(211,47,47,0.15), 0 20px 50px rgba(0,0,0,0.6); transform: translateZ(30px); }
+.ava-pct { font-family: 'Cinzel Decorative', serif; font-size: clamp(60px, 10vw, 100px); font-weight: 900; color: var(--third-eye); text-shadow: 0 0 40px rgba(211,47,47,0.8); line-height: 1; }
+.ava-bar-bg { height: 6px; background: rgba(255,255,255,0.05); max-width: 500px; margin: 30px auto 0; border-radius: 3px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+.ava-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-base), var(--third-eye), var(--ganga-cyan)); transition: width 1s cubic-bezier(0.25, 1, 0.15, 1); box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+
+/* ─── BENCHMARK TABLE ─── */
+.table-container { overflow-x: auto; margin-top: 40px; border-radius: 12px; border: 1px solid var(--gold-border); box-shadow: 0 20px 50px rgba(0,0,0,0.8); transform: translateZ(20px); }
+table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: left; background: rgba(5,2,10,0.8); }
+th { background: rgba(212,175,55,0.15); font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: var(--gold-light); padding: 20px 24px; border-bottom: 2px solid var(--gold-border); text-transform: uppercase; letter-spacing: 2px; }
+td { padding: 18px 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; border-bottom: 1px solid rgba(212,175,55,0.1); color: var(--ash-pure); transition: var(--fast-trans); }
+tr:hover td { background: rgba(212,175,55,0.08); }
+.highlight-row td { color: var(--gold-light); font-weight: bold; background: rgba(212,175,55,0.03); font-size: 14px; }
+.txt-good { color: var(--ganga-cyan); text-shadow: 0 0 10px rgba(0,229,255,0.3); }
+
+/* ─── FOOTER ─── */
+footer {
+  text-align: center; padding: 80px 20px; border-top: 1px solid var(--gold-border);
+  background: rgba(0,0,5,0.95); position: relative;
+}
+.footer-logo { font-family: 'Cinzel Decorative', serif; font-size: 32px; color: var(--gold-base); letter-spacing: 10px; margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--gold-glow)); }
+.footer-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ash-muted); margin-bottom: 12px; letter-spacing: 3px; text-transform: uppercase; }
+.footer-mantra { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--third-eye); letter-spacing: 8px; margin-top: 30px; text-shadow: 0 0 15px rgba(211,47,47,0.5); }
+
+/* Section Separator */
+.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold-base), transparent); margin: 100px 0; position: relative; opacity: 0.6; box-shadow: 0 0 20px var(--gold-glow); }
+.divider::after {
+  content: '🔱'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: var(--void); padding: 0 30px; font-size: 26px; color: var(--gold-base); filter: drop-shadow(0 0 15px var(--gold-light));
+}
+
+/* Animations */
+.reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.25, 1, 0.15, 1); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .input-grid { grid-template-columns: 1fr 1fr; }
+  .btn-royal { grid-column: span 2; }
+  .state-grid { grid-template-columns: repeat(2, 1fr); }
+  .royal-panel:hover, .step-card:hover { transform: none; }
+}
+@media (max-width: 600px) {
+  nav { flex-direction: column; height: auto; padding: 15px; gap: 15px; }
+  .nav-links { flex-wrap: wrap; justify-content: center; }
+  header { padding-top: 150px; }
+  .input-grid { grid-template-columns: 1fr; }
+  .btn-royal { grid-column: span 1; }
+  .ava-grid { grid-template-columns: 1fr; }
+  .state-grid { grid-template-columns: 1fr; }
+  .royal-panel { padding: 40px 20px; }
+  .step-display { margin-left: 0; width: 100%; text-align: center; }
+  .hash-string { font-size: 12px; }
+}
 </style>
 </head>
 <body>
 
-<canvas id="bg-canvas"></canvas>
-<div class="glow-orb orb1"></div>
-<div class="glow-orb orb2"></div>
-<div class="glow-orb orb3"></div>
-<div class="scanline"></div>
+<!-- Custom Cursor Rings -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
 
-<div class="wrapper">
+<!-- Backgrounds -->
+<div id="canvas-container"></div>
+<div class="noise-overlay"></div>
+<div class="vignette"></div>
+<div class="orb orb-gold"></div>
+<div class="orb orb-blue"></div>
 
+<!-- Sacred Yantra Background -->
+<div class="mandala-bg">
+<svg viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Circles -->
+  <circle cx="500" cy="500" r="480" stroke="rgba(212,175,55,0.4)" stroke-width="1"/>
+  <circle cx="500" cy="500" r="460" stroke="rgba(212,175,55,0.2)" stroke-width="2" stroke-dasharray="10 10"/>
+  <circle cx="500" cy="500" r="400" stroke="rgba(212,175,55,0.5)" stroke-width="1"/>
+  
+  <!-- Lotus Petals (Abstracted) -->
+  <g stroke="rgba(212,175,55,0.3)" stroke-width="1">
+    <path d="M500,100 Q600,250 500,400 Q400,250 500,100" />
+    <path d="M500,900 Q600,750 500,600 Q400,750 500,900" />
+    <path d="M100,500 Q250,600 400,500 Q250,400 100,500" />
+    <path d="M900,500 Q750,600 600,500 Q750,400 900,500" />
+    <!-- Diagonals -->
+    <path d="M217,217 Q350,350 429,429" />
+    <path d="M783,783 Q650,650 571,571" />
+    <path d="M783,217 Q650,350 571,429" />
+    <path d="M217,783 Q350,650 429,571" />
+  </g>
+
+  <!-- Triangles (Sri Yantra essence) -->
+  <g stroke="rgba(212,175,55,0.6)" stroke-width="1.5" fill="none">
+    <polygon points="500,200 750,650 250,650" />
+    <polygon points="500,800 250,350 750,350" />
+    <polygon points="500,300 650,550 350,550" />
+    <polygon points="500,700 350,450 650,450" />
+  </g>
+
+  <!-- Inner Bindu -->
+  <circle cx="500" cy="500" r="50" stroke="rgba(212,175,55,0.8)" stroke-width="2"/>
+  <circle cx="500" cy="500" r="20" fill="rgba(212,175,55,0.5)"/>
+</svg>
+</div>
+
+<!-- Navigation -->
+<nav>
+  <a class="nav-logo" href="#">RUDRA·512</a>
+  <div class="nav-links">
+    <a class="nav-link" href="#invoke">Invoke</a>
+    <a class="nav-link" href="#architecture">Algorithm</a>
+    <a class="nav-link" href="#stepper">Stepper</a>
+    <a class="nav-link" href="#avalanche">Avalanche</a>
+    <a class="nav-btn" href="https://github.com/Developer-Ayush" target="_blank">@Developer-Ayush ↗</a>
+    <a class="nav-btn" href="https://github.com/Developer-Ayush/rudra-512" target="_blank">Github ↗</a>
+    <a class="nav-btn" href="https://pypi.org/project/rudra-512-hash/" target="_blank">Python ↗</a>
+    <a class="nav-btn" href="https://www.npmjs.com/package/rudra-512-hash" target="_blank">NPM ↗</a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
 <header>
-  <div class="badge float-label">512-bit · Custom Cryptographic Hash · v3 Hardened · 3D Edition</div>
-  <h1>
-    <span class="rudra">RUDRA</span><span class="dash">-</span><span class="num">512</span>
-  </h1>
-  <p class="subtitle">// Inspired by Lord Shiva · Built in C++ · 512-bit digest · BPE Tokenization · Embedded Salt · Asymmetric Rotations</p>
-  <div class="stats-row">
-    <div class="stat"><span class="stat-val">512</span><span class="stat-lbl">Bit Output</span></div>
-    <div class="stat"><span class="stat-val">8×64</span><span class="stat-lbl">State Words</span></div>
-    <div class="stat"><span class="stat-val">32</span><span class="stat-lbl">Default Rounds</span></div>
-    <div class="stat"><span class="stat-val">~50%</span><span class="stat-lbl">Avalanche</span></div>
-    <div class="stat"><span class="stat-val">128</span><span class="stat-lbl">Hex Chars</span></div>
+  <div class="hero-om">ॐ</div>
+  <div class="badge">
+    <span class="badge-icon">🔱</span> Architecture v4 Parity <span class="badge-icon">🔱</span>
+  </div>
+  <h1>RUDRA<span class="h1-sub">512</span></h1>
+  <div class="hero-subtitle">The Divine Edition</div>
+  <p class="hero-desc">
+    Forged in the fires of Kailash. Featuring <span>Scattered Salt Injection</span> <span class="dot">·</span> 
+    <span>Tokenization Pipeline</span> <span class="dot">·</span> <span>SipHash Mixer</span> <span class="dot">·</span> 
+    <span>Full-Round Whitening</span>. A 512-bit cryptographic hash function designed to withstand the tests of time and compute.
+  </p>
+
+  <div class="stats-container">
+    <div class="stat-box"><span class="stat-val">512</span><span class="stat-lbl">Bit Digest</span></div>
+    <div class="stat-box"><span class="stat-val">8×64</span><span class="stat-lbl">State Words</span></div>
+    <div class="stat-box"><span class="stat-val">32</span><span class="stat-lbl">Default Rounds</span></div>
+    <div class="stat-box"><span class="stat-val">~50%</span><span class="stat-lbl">Avalanche</span></div>
   </div>
 </header>
 
-<div class="container">
+<div class="wrapper">
+  
+  <div class="divider"></div>
 
-  <!-- HASH INPUT -->
-  <div class="panel orange">
-    <div class="section-label">// Interactive Hash Computer — v3 Hardened</div>
-    <div class="input-row">
-      <div class="input-group" style="flex:3">
-        <label>Input Message</label>
-        <input type="text" id="inputMsg" value="hello" placeholder="Type something to hash..." />
+  <!-- HASH INVOCATION -->
+  <section id="invoke" class="royal-panel reveal">
+    <div class="panel-tag">॥ The Altar of Hashing ॥</div>
+    <h2 class="panel-title">Invoke the Hash</h2>
+    <p class="panel-desc">Offer your message and sacred salt. Witness the irreversible 512-bit transformation driven by Mahadev's logic.</p>
+    
+    <div class="input-grid">
+      <div class="input-group">
+        <label>Sacred Message</label>
+        <input type="text" id="inputMsg" value="hello" placeholder="Enter your text here..."/>
       </div>
-      <div class="input-group" style="flex:1;min-width:110px">
-        <label>Rounds</label>
-        <input type="text" inputmode="numeric" id="inputRounds" value="32" />
+      <div class="input-group">
+        <label>Permutation Rounds</label>
+        <input type="number" id="inputRounds" value="32" min="1" max="512"/>
       </div>
-      <div class="input-group" style="flex:2">
-        <label>Salt (optional)</label>
-        <input type="text" id="inputSalt" placeholder="Leave blank for no salt..." />
+      <div class="input-group">
+        <label>Vibhuti (Salt) - Optional</label>
+        <input type="text" id="inputSalt" value="" placeholder="Scatter the salt..."/>
       </div>
-      <button class="btn-hash" onclick="computeHash()">Hash It</button>
+      <button class="btn-royal" onclick="computeHash()">Invoke ॥</button>
     </div>
-    <div class="output-box" id="outputBox">
-      <div class="output-label">// Rudra-512 v3 Digest — 128 hex chars = 512 bits</div>
-      <div class="hash-output" id="hashOutput"></div>
-      <div style="margin-top:16px;display:flex;gap:20px;flex-wrap:wrap">
-        <span id="timeLabel" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)"></span>
-        <span id="lenLabel"  style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)"></span>
-        <span id="saltLabel" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)"></span>
-      </div>
-    </div>
-  </div>
 
-  <!-- HOW IT WORKS -->
-  <div style="margin-bottom:36px">
-    <div class="section-title" style="margin-bottom:6px">How It Works — v3</div>
-    <div class="section-desc">// Rudra-512 v3 processes input through eight hardened phases with novel cryptographic constructions</div>
+    <div class="output-container" id="outputBox">
+      <div class="panel-tag" style="color: var(--kailash-blue); border-color: rgba(136,192,208,0.3);">Digest Revealed</div>
+      <div class="hash-string" id="hashOutput"></div>
+      
+      <div class="meta-info">
+        <div class="meta-item"><span>⚡</span> <span id="timeLabel">0.00ms</span></div>
+        <div class="meta-item"><span>📏</span> <span id="lenLabel">Length</span></div>
+        <div class="meta-item"><span>🧂</span> <span id="saltLabel">Salt Info</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PADDING VISUALIZER -->
+  <section id="paddingSection" class="royal-panel reveal" style="display: none;">
+    <div class="panel-tag">॥ The Anatomy of the Offering ॥</div>
+    <h2 class="panel-title">Block Structure & Padding</h2>
+    <p class="panel-desc">Observe how the Scattered Salt Injection (SSI) places salt bytes independently, followed by Merkle-Damgård padding and 64-bit length enclosure.</p>
+    
+    <div class="pad-viz" id="paddingViz"></div>
+    
+    <div class="legend">
+      <div class="legend-item"><div class="legend-box b-salt"></div> Scattered Salt</div>
+      <div class="legend-item"><div class="legend-box b-msg"></div> Message Data</div>
+      <div class="legend-item"><div class="legend-box b-pad"></div> 0x80 Pad</div>
+      <div class="legend-item"><div class="legend-box b-zero" style="border:1px solid #555;"></div> Zero Fill</div>
+      <div class="legend-item"><div class="legend-box b-len"></div> 64-bit Length</div>
+    </div>
+  </section>
+
+  <!-- INTERNAL STATE -->
+  <section id="stateSection" class="royal-panel reveal" style="display: none;">
+    <div class="panel-tag">॥ The Inner Sanctum ॥</div>
+    <h2 class="panel-title">Final 512-bit State</h2>
+    <p class="panel-desc">The 8 × 64-bit internal registers after absorbing the padded blocks and executing the final permutations. Initialized using fractional components of prime roots.</p>
+    <div class="state-grid" id="stateGrid"></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ARCHITECTURE / MANDALA -->
+  <section id="architecture" class="reveal" style="margin-bottom: 60px;">
+    <div class="panel-tag">॥ The Eight Paths ॥</div>
+    <h2 class="panel-title" style="margin-bottom: 40px;">Architecture (v4 Parity)</h2>
+    
     <div class="steps-grid">
       <div class="step-card">
-        <div class="step-num">STEP 01 · [NC4]</div>
-        <div class="step-name">BPE-Inspired Tokenization</div>
-        <div class="step-detail">Input tokenized before hashing. Variable-length tokens based on frequency analysis. Prevents trivial bit-pattern manipulation attacks.</div>
-        <div class="step-code">seed = simple_hash(input)
-token_len = 1 + ((seed >> 8) % 16)
-tokens = split(input, token_len)</div>
+        <div class="step-num">01</div>
+        <div class="step-badge">SSI</div>
+        <h3 class="step-title">Scattered Salt</h3>
+        <p class="step-desc">Salt bytes are dynamically placed at independent positions via a hash-derived scatter algorithm, preventing clustering.</p>
+        <div class="step-code">pos[i] = f(data_hash, salt_hash, i)</div>
       </div>
+      
       <div class="step-card">
-        <div class="step-num">STEP 02 · [NC5]</div>
-        <div class="step-name">Embedded Salt Positioning</div>
-        <div class="step-detail">Salt embedded at a deterministic position, not prepended. Position computed from hash(salt) + hash(input). Prevents prefix attacks and dictionary attacks.</div>
-        <div class="step-code">pos = (hash(salt) + hash(input))
-           % (total_len - salt_len)
-embed salt at pos in stream</div>
+        <div class="step-num">02</div>
+        <div class="step-badge">TPL</div>
+        <h3 class="step-title">Token Pipeline</h3>
+        <p class="step-desc">Buffer splits into variable-length tokens. Each undergoes a Fisher-Yates byte shuffle and rolling XOR before absorption.</p>
+        <div class="step-code">shuffle(token, fisher_yates(th))</div>
       </div>
+      
       <div class="step-card">
-        <div class="step-num">STEP 03 · [NC6]</div>
-        <div class="step-name">State Whitening</div>
-        <div class="step-detail">After initial state setup, perform one pre-absorption permutation. Ensures input-independent initialization diverges from v3. Prevents IV-recovery attacks.</div>
-        <div class="step-code">init_state(rounds, salt_hash)
-whiten_state(s)  // 2 rounds
-// diverges before any input</div>
+        <div class="step-num">03</div>
+        <div class="step-badge">SHM</div>
+        <h3 class="step-title">SipHash Mixer</h3>
+        <p class="step-desc">A robust 2-round SipRound-inspired 64-bit mixer guarantees excellent avalanche properties for internal metadata hashing.</p>
+        <div class="step-code">v1=rotl(v1,13)^v0; v3=rotl(v3,16)^v2;</div>
       </div>
+
       <div class="step-card">
-        <div class="step-num">STEP 04 · [NC7]</div>
-        <div class="step-name">Asymmetric Rotations</div>
-        <div class="step-detail">Rotation schedule includes per-word asymmetric offsets. Word-round dependent rotations increase diffusion rate dramatically.</div>
-        <div class="step-code">rot = (ROUND_ROT[(i*5+r*9)%64]
-      + (i ^ r)) % 64
-v = rotl64(v, rot)  // asymmetric</div>
+        <div class="step-num">04</div>
+        <div class="step-badge">DOM</div>
+        <h3 class="step-title">Domain Separation</h3>
+        <p class="step-desc">Cryptographic separation guarantees inputs hashed as strings vs files start with mathematically distinct IVs.</p>
+        <div class="step-code">s[5] ^= frac(pi) * 2^64</div>
       </div>
+
       <div class="step-card">
-        <div class="step-num">STEP 05 · [NC8]</div>
-        <div class="step-name">Variable Block Order</div>
-        <div class="step-detail">Block indices XORed with hash(salt) before use in tweak. Prevents block reordering attacks and sequential block exploits.</div>
-        <div class="step-code">obf_idx = block_idx ^ salt_hash
-tweak = rotl(obf_idx + j + s[j],
-             ROT[j%8])</div>
+        <div class="step-num">05</div>
+        <div class="step-badge">WHT</div>
+        <h3 class="step-title">State Whitening</h3>
+        <p class="step-desc">All 8 words are XOR'd with specific constants and salt tweaks, then fully permuted to erase IV-recovery vectors entirely.</p>
+        <div class="step-code">s[i] ^= WK[i] ^ rotl(salt_h, ...)</div>
       </div>
+
       <div class="step-card">
-        <div class="step-num">STEP 06 · [C1]</div>
-        <div class="step-name">Non-linear Absorption</div>
-        <div class="step-detail">State-dependent tweak: s[j] placed inside rotl argument — algebraically non-cancellable. Prevents meet-in-the-middle attacks.</div>
-        <div class="step-code">tweak = rotl(obf_idx+j+s[j], ROT[j])
-s[j] ^= word ^ tweak</div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">STEP 07 · [C3]</div>
-        <div class="step-name">Snapshot Permutation</div>
-        <div class="step-detail">Full state snapshot per round eliminates sequential-update asymmetry. Period-64 rotation schedule per word for maximum diffusion.</div>
-        <div class="step-code">old = s[:]
-v = old[i]^rotl(old[(i+mix)%8],ROT[i])
-v = rotl(v, ROUND_ROT[(i*5+r*9)%64]+(i^r))
-s[i] = v</div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">STEP 08 · [C2]</div>
-        <div class="step-name">Finalisation</div>
-        <div class="step-detail">After all blocks absorbed: final permutation for full round count (min 1). State serialised as 16-char zero-padded hex — 128 chars total.</div>
-        <div class="step-code">permute(state, rounds)
-digest = hex(s[0..7])   // 128 chars</div>
+        <div class="step-num">06</div>
+        <div class="step-badge">ASR</div>
+        <h3 class="step-title">Asymmetric Rotations</h3>
+        <p class="step-desc">Period-64 rotation schedule ensures all offsets are strictly within [1, 63]. No undefined behavior (UB), maximizing diffusion.</p>
+        <div class="step-code">v = rotl64(v, ROUND_ROT[idx])</div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- PADDING VISUAL -->
-  <div class="panel purple" id="paddingSection" style="display:none">
-    <div class="section-label">// Padding Visualizer</div>
-    <div class="section-title" style="font-size:18px">Message Block Structure</div>
-    <div id="paddingViz" class="padding-visual"></div>
-    <div style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">
-      <span><span class="byte-cell byte-salt" style="display:inline-flex;width:18px;height:18px;margin-right:5px;vertical-align:middle;font-size:8px">S</span>Salt (embedded)</span>
-      <span><span class="byte-cell byte-msg"  style="display:inline-flex;width:18px;height:18px;margin-right:5px;vertical-align:middle;font-size:8px">M</span>Message</span>
-      <span><span class="byte-cell byte-pad"  style="display:inline-flex;width:18px;height:18px;margin-right:5px;vertical-align:middle;font-size:8px">80</span>Pad marker</span>
-      <span><span class="byte-cell byte-zero" style="display:inline-flex;width:18px;height:18px;margin-right:5px;vertical-align:middle;font-size:8px">00</span>Zero pad</span>
-      <span><span class="byte-cell byte-len"  style="display:inline-flex;width:18px;height:18px;margin-right:5px;vertical-align:middle;font-size:8px">L</span>Length BE64</span>
-    </div>
-  </div>
+  <div class="divider"></div>
 
-  <!-- STATE -->
-  <div class="panel purple" id="stateSection" style="display:none">
-    <div class="section-label">// Internal State — After Full Hash</div>
-    <div class="section-title" style="font-size:18px">8 × 64-bit State Words</div>
-    <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px">
-      Init constants: floor(frac(sqrt(p))·2⁶⁴) for p ∈ {23,29,31,37,41,43,47,53} — distinct from all NIST primitives.
-    </p>
-    <div class="state-grid" id="stateGrid"></div>
-  </div>
-
-  <!-- PERMUTATION STEPPER -->
-  <div class="panel gold">
-    <div class="section-label">// Permutation Stepper</div>
-    <div class="section-title" style="font-size:18px">Round-by-Round Animation</div>
-    <p class="section-desc">Steps through the exact operations of the v3 permute() function with asymmetric rotations. Hash shown here matches output above exactly.</p>
-    <div class="perm-controls">
-      <button class="btn-sm primary" id="btnFwd"  onclick="stepFwd()">Step Forward</button>
-      <button class="btn-sm"         id="btnBack" onclick="stepBack()" style="display:none">Step Back</button>
-      <button class="btn-sm"                       onclick="resetStepper()">Reset</button>
-      <button class="btn-sm"         id="btnAuto" onclick="toggleAuto()">Auto Run</button>
-      <div class="round-counter">
-        Phase: <span id="phaseLabel">—</span> &nbsp;|&nbsp;
-        Round: <span id="roundLabel">—</span> &nbsp;|&nbsp;
-        Word: <span id="wordLabel">—</span> &nbsp;|&nbsp;
-        Op: <span id="opLabel">—</span>
+  <!-- STEPPER -->
+  <section id="stepper" class="royal-panel reveal">
+    <div class="panel-tag">॥ The Dance of Nataraja ॥</div>
+    <h2 class="panel-title">Permutation Stepper</h2>
+    <p class="panel-desc">Step through the mathematical choreography of the hash. Watch the state registers evolve block by block in true 3D space.</p>
+    
+    <div class="controls-bar">
+      <button class="btn-sm" id="btnInit" style="border-color:var(--gold-base); color:var(--gold-base);" onclick="initStepper()">Initialize State</button>
+      <button class="btn-sm" id="btnBack" onclick="stepBack()" disabled>◀ Step Back</button>
+      <button class="btn-sm" id="btnFwd" onclick="stepFwd()" disabled>▶ Step Forward</button>
+      <button class="btn-sm" id="btnAuto" onclick="toggleAuto()" disabled>⚡ Auto Execute</button>
+      
+      <div class="step-display">
+        Phase: <span id="lblPhase" style="color:var(--ash-pure);">Idle</span> | 
+        Op: <span id="lblOp" style="color:var(--ash-pure);">—</span>
       </div>
     </div>
-    <div class="flow-diagram" id="flowDiagram">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:20px">
-        Click "Step Forward" to begin stepping through the Rudra-512 v3 pipeline
-      </div>
-    </div>
-    <div class="state-grid" id="stepStateGrid" style="margin-top:20px"></div>
-  </div>
 
-  <!-- AVALANCHE -->
-  <div class="panel green">
-    <div class="section-label">// Avalanche Effect Demo</div>
-    <div class="section-title" style="font-size:18px">1-Bit Change → ~50% Different Output</div>
-    <p class="section-desc">Modify a single character and watch ~50% of bits flip. Changed bits shown in orange.</p>
-    <div class="input-row" style="margin-top:20px">
+    <div class="flow-box" id="flowDiagram">
+      Press <strong style="color:var(--gold-base)">Initialize State</strong> to load the current input into the stepper.
+    </div>
+
+    <div class="state-grid" id="stepStateGrid"></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- AVALANCHE EFFECT -->
+  <section id="avalanche" class="royal-panel reveal">
+    <div class="panel-tag">॥ The Third Eye's Glare ॥</div>
+    <h2 class="panel-title">Avalanche Effect</h2>
+    <p class="panel-desc">A single altered bit creates cosmic chaos. Modify the inputs below and observe the Strict Avalanche Criterion (SAC) targeting ~50% bit flip.</p>
+    
+    <div class="input-grid" style="grid-template-columns: 1fr 1fr;">
       <div class="input-group">
-        <label>Test Input A</label>
-        <input type="text" id="avaA" value="hello" oninput="computeAvalanche()" />
+        <label>Input A</label>
+        <input type="text" id="avaA" value="Om Namah Shivaya" oninput="computeAvalanche()"/>
       </div>
       <div class="input-group">
-        <label>Test Input B</label>
-        <input type="text" id="avaB" value="hello" oninput="computeAvalanche()" />
+        <label>Input B (One character changed)</label>
+        <input type="text" id="avaB" value="Om Namah Shivayi" oninput="computeAvalanche()"/>
       </div>
     </div>
-    <div class="ava-grid" id="avaGrid" style="display:none">
-      <div class="ava-box"><div class="ava-box-label">Hash A — Binary</div><div class="ava-hash" id="avaHashA"></div></div>
-      <div class="ava-box"><div class="ava-box-label">Hash B — Binary</div><div class="ava-hash" id="avaHashB"></div></div>
+
+    <div class="ava-grid" id="avaGrid" style="display:none;">
+      <div class="ava-card">
+        <div class="ava-title">Binary Stream A</div>
+        <div class="ava-bin" id="avaHashA"></div>
+      </div>
+      <div class="ava-card">
+        <div class="ava-title" style="color: var(--third-eye); border-color: rgba(211,47,47,0.3);">Binary Stream B</div>
+        <div class="ava-bin" id="avaHashB"></div>
+      </div>
     </div>
-    <div class="ava-score" id="avaScore" style="display:none">
+
+    <div class="ava-score" id="avaScore" style="display:none;">
       <div class="ava-pct" id="avaPct">0%</div>
-      <div class="ava-pct-label" id="avaBits">0 / 512 bits changed</div>
-      <div class="ava-pct-label" style="margin-top:4px">bits changed (ideal ~50%)</div>
-      <div class="ava-bar"><div class="ava-bar-fill" id="avaBar" style="width:0%"></div></div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ash-muted); margin-top:10px;" id="avaBits">0 / 512 bits changed</div>
+      <div class="ava-bar-bg"><div class="ava-bar-fill" id="avaBar" style="width:0%"></div></div>
     </div>
-  </div>
+  </section>
+
+  <div class="divider"></div>
 
   <!-- BENCHMARK -->
-  <div class="panel" style="background:rgba(15,15,28,0.85)">
-    <div class="section-label">// Benchmark</div>
-    <div class="section-title" style="font-size:18px">Rudra-512 v3 vs SHA-512 vs SHA3-512</div>
-    <table>
-      <thead>
-        <tr><th>Algorithm</th><th>Bit Freq</th><th>Runs</th><th>Entropy</th><th>Avalanche</th><th>Speed (h/s)</th><th>Collisions</th></tr>
-      </thead>
-      <tbody>
-        <tr class="algo-rudra">
-          <td>Rudra-512 v3</td>
-          <td class="good">50.0254%</td><td class="good">0.500270</td><td class="good">1.000000</td>
-          <td class="good">50.1301%</td><td class="neutral">142,500</td><td class="good">None</td>
-        </tr>
-        <tr>
-          <td>SHA-512</td>
-          <td>49.7373%</td><td>0.502109</td><td>0.999980</td>
-          <td>49.7192%</td><td class="good">860,149</td><td class="good">None</td>
-        </tr>
-        <tr>
-          <td>SHA3-512</td>
-          <td>49.6582%</td><td>0.496582</td><td class="good">1.000000</td>
-          <td>50.1404%</td><td class="good">653,170</td><td class="good">None</td>
-        </tr>
-      </tbody>
-    </table>
-    <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:16px;line-height:1.9">
-      * v3 slower than v3 — BPE tokenization + state whitening add overhead, intentional for GPU brute-force resistance.<br/>
-      * v3: Adds NC4 BPE tokenization, NC5 embedded salt positioning, NC6 state whitening, NC7 asymmetric rotations, NC8 variable block order.
+  <section class="royal-panel reveal">
+    <div class="panel-tag">॥ The Cosmic Trial ॥</div>
+    <h2 class="panel-title">Benchmark & Security</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Bit Freq (0/1)</th>
+            <th>Entropy</th>
+            <th>Avalanche</th>
+            <th>Speed (H/s)</th>
+            <th>Collisions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row">
+            <td>Rudra-512 (Divine)</td>
+            <td class="txt-good">50.025%</td>
+            <td class="txt-good">1.000000</td>
+            <td class="txt-good">50.130%</td>
+            <td>142,500*</td>
+            <td class="txt-good">0</td>
+          </tr>
+          <tr>
+            <td>SHA-512</td>
+            <td>49.737%</td>
+            <td>0.999980</td>
+            <td>49.719%</td>
+            <td class="txt-good">860,149</td>
+            <td class="txt-good">0</td>
+          </tr>
+          <tr>
+            <td>SHA3-512</td>
+            <td>49.658%</td>
+            <td class="txt-good">1.000000</td>
+            <td class="txt-good">50.140%</td>
+            <td class="txt-good">653,170</td>
+            <td class="txt-good">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash-muted); margin-top:20px; line-height:1.8;">
+      * Rudra-512 is intentionally compute-heavy. The Scattered Salt Injection, Tokenization Pipeline, and Full-Round Whitening serve as deliberate deterrents to ASIC/GPU brute-forcing, acting akin to key-stretching functions while remaining a general-purpose hash.
     </p>
-  </div>
+  </section>
 
-  <!-- TAGS -->
-  <div style="margin-bottom:48px">
-    <div class="section-label" style="margin-bottom:16px">// Features</div>
-    <span class="tag">512-bit output</span><span class="tag">BPE Tokenization</span>
-    <span class="tag">Embedded Salt</span><span class="tag">State Whitening</span>
-    <span class="tag">Asymmetric Rotations</span><span class="tag">Block Obfuscation</span>
-    <span class="tag">Configurable rounds</span><span class="tag">File hashing</span>
-    <span class="tag">Python bindings</span><span class="tag">Node.js bindings</span>
-    <span class="tag">CLI tools</span><span class="tag">Data integrity</span>
-    <span class="tag">v3 Hardened</span><span class="tag">Snapshot Permutation</span>
-    <span class="tag">Period-64 Rotations</span><span class="tag">Non-linear Absorb</span>
-  </div>
-
-</div>
+</div> <!-- Wrapper -->
 
 <footer>
-  Rudra-512 v3 · Created by <a href="https://github.com/Developer-Ayush" target="_blank">Ayush Anand</a> ·
-  <a href="https://github.com/Developer-Ayush/rudra512" target="_blank">GitHub</a> ·
-  <a href="https://pypi.org/project/rudra-512-hash/" target="_blank">PyPI</a> ·
-  <a href="https://www.npmjs.com/package/rudra-512-hash" target="_blank">npm</a>
+  <div class="footer-logo">RUDRA·512</div>
+  <div class="footer-text">Constructed for Eternity. Architecture v4.</div>
+  <div class="footer-text">© 2026 Developer-Ayush</div>
+  <div class="footer-mantra">ॐ नमः शिवाय · Har Har Mahadev</div>
 </footer>
-</div>
 
-<!-- Three.js for 3D background -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ════════════════════════════════════════════════════════════
-// THREE.JS 3D BACKGROUND
-// ════════════════════════════════════════════════════════════
-(function() {
-  const canvas = document.getElementById('bg-canvas');
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+/* ═════════════════════════════════════════════════════════════
+   THREE.JS — BHASMA (ASH) & COSMIC GLOW
+═════════════════════════════════════════════════════════════ */
+function initBackground() {
+  const container = document.getElementById('canvas-container');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+  camera.position.z = 200;
+
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
-  camera.position.set(0, 0, 50);
-
-  // Particle field
-  const particleCount = 1800;
+  // Particles simulating golden sparks and holy ash
+  const particleCount = 2000;
+  const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(particleCount * 3);
   const colors = new Float32Array(particleCount * 3);
   const sizes = new Float32Array(particleCount);
 
-  for (let i = 0; i < particleCount; i++) {
-    positions[i*3]   = (Math.random() - 0.5) * 160;
-    positions[i*3+1] = (Math.random() - 0.5) * 160;
-    positions[i*3+2] = (Math.random() - 0.5) * 80;
+  const colorGold = new THREE.Color(0xD4AF37);
+  const colorAsh = new THREE.Color(0xEAE6E5);
+  const colorBlue = new THREE.Color(0x88C0D0);
 
-    const t = Math.random();
-    if (t < 0.4) {
-      colors[i*3] = 1; colors[i*3+1] = 0.3; colors[i*3+2] = 0.0; // orange
-    } else if (t < 0.65) {
-      colors[i*3] = 0.3; colors[i*3+1] = 0.43; colors[i*3+2] = 1.0; // blue
-    } else if (t < 0.85) {
-      colors[i*3] = 0.61; colors[i*3+1] = 0.43; colors[i*3+2] = 1.0; // purple
-    } else {
-      colors[i*3] = 0.0; colors[i*3+1] = 0.9; colors[i*3+2] = 0.63; // green
-    }
-    sizes[i] = Math.random() * 2.5 + 0.5;
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 800;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 800;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 400 - 100;
+
+    const rand = Math.random();
+    let col = colorGold;
+    if (rand > 0.6) col = colorAsh;
+    if (rand > 0.9) col = colorBlue;
+
+    colors[i * 3] = col.r; colors[i * 3 + 1] = col.g; colors[i * 3 + 2] = col.b;
+    sizes[i] = Math.random() * 2 + 0.5;
   }
 
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-  const mat = new THREE.PointsMaterial({
-    size: 0.6,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.55,
-    sizeAttenuation: true
+  // Custom shader for glowing particles
+  const material = new THREE.ShaderMaterial({
+    uniforms: { time: { value: 0 } },
+    vertexShader: `
+      attribute float size;
+      attribute vec3 color;
+      varying vec3 vColor;
+      uniform float time;
+      void main() {
+        vColor = color;
+        vec3 pos = position;
+        pos.y += sin(time * 0.5 + pos.x * 0.01) * 10.0;
+        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+        gl_PointSize = size * (300.0 / -mvPosition.z);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vColor;
+      void main() {
+        vec2 xy = gl_PointCoord.xy - vec2(0.5);
+        float ll = length(xy);
+        if(ll > 0.5) discard;
+        float alpha = (0.5 - ll) * 2.0;
+        gl_FragColor = vec4(vColor, alpha * 0.6);
+      }
+    `,
+    transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
   });
 
-  const particles = new THREE.Points(geo, mat);
-  scene.add(particles);
+  const particleSystem = new THREE.Points(geometry, material);
+  scene.add(particleSystem);
 
-  // Wireframe icosahedron
-  const icoGeo = new THREE.IcosahedronGeometry(22, 2);
-  const icoMat = new THREE.MeshBasicMaterial({
-    color: 0xff4d00,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.04
-  });
-  const ico = new THREE.Mesh(icoGeo, icoMat);
-  scene.add(ico);
-
-  // Torus
-  const torGeo = new THREE.TorusGeometry(30, 0.3, 8, 80);
-  const torMat = new THREE.MeshBasicMaterial({ color: 0x9b6dff, transparent: true, opacity: 0.06 });
-  const torus = new THREE.Mesh(torGeo, torMat);
-  torus.rotation.x = Math.PI * 0.3;
-  scene.add(torus);
-
-  // Mouse parallax
-  let mx = 0, my = 0;
-  document.addEventListener('mousemove', e => {
-    mx = (e.clientX / window.innerWidth - 0.5) * 2;
-    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
+    mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
   });
 
-  // Resize
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  let t = 0;
+  const clock = new THREE.Clock();
   function animate() {
     requestAnimationFrame(animate);
-    t += 0.004;
-
-    particles.rotation.y = t * 0.06 + mx * 0.08;
-    particles.rotation.x = t * 0.03 + my * 0.04;
-
-    ico.rotation.y = t * 0.12;
-    ico.rotation.x = t * 0.07;
-
-    torus.rotation.z = t * 0.08;
-    torus.rotation.y = t * 0.05;
-
-    camera.position.x += (mx * 4 - camera.position.x) * 0.04;
-    camera.position.y += (-my * 3 - camera.position.y) * 0.04;
+    const delta = clock.getDelta();
+    material.uniforms.time.value += delta;
+    
+    // Slow drifting rotation
+    particleSystem.rotation.y += 0.0005;
+    particleSystem.rotation.x += 0.0002;
+    
+    // Mouse parallax
+    camera.position.x += (mouseX - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY - camera.position.y) * 0.02;
+    camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
   }
   animate();
-})();
+}
 
-// ════════════════════════════════════════════════════════════
-// RUDRA-512 v3 — JS Implementation
-// ════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════
+   UI INTERACTIVITY, 3D TILT & CUSTOM CURSOR
+═════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  initBackground();
+  setupCursor();
+  setupScrollReveal();
+  setup3DTilt();
+  
+  // Initial computations
+  computeHash();
+  computeAvalanche();
+
+  // Enter key listeners
+  ['inputMsg', 'inputSalt', 'inputRounds'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') computeHash(); });
+  });
+});
+
+function setup3DTilt() {
+  if (window.innerWidth < 1024) return;
+  document.querySelectorAll('.royal-panel, .step-card, .ava-card').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const xc = rect.width / 2;
+      const yc = rect.height / 2;
+      const dx = x - xc;
+      const dy = y - yc;
+      el.style.transform = `perspective(1200px) rotateY(${dx / 40}deg) rotateX(${-dy / 40}deg) translateY(-5px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = 'perspective(1200px) rotateY(0) rotateX(0) translateY(0)';
+    });
+  });
+}
+
+function setupCursor() {
+  if (window.innerWidth < 1024) return;
+  const cur = document.getElementById('cur');
+  const curR = document.getElementById('cur-ring');
+  let cx = window.innerWidth / 2, cy = window.innerHeight / 2, rx = cx, ry = cy;
+
+  document.addEventListener('mousemove', e => {
+    cx = e.clientX; cy = e.clientY;
+    cur.style.left = (cx - 3) + 'px'; cur.style.top = (cy - 3) + 'px';
+  });
+
+  function animCur() {
+    rx += (cx - rx) * 0.15; ry += (cy - ry) * 0.15;
+    curR.style.left = (rx - 20) + 'px'; curR.style.top = (ry - 20) + 'px';
+    requestAnimationFrame(animCur);
+  }
+  animCur();
+
+  document.querySelectorAll('button, a, .hash-chunk, .pad-byte').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+  });
+  document.querySelectorAll('input').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('text-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('text-hover'));
+  });
+}
+
+function setupScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('active');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+/* ═════════════════════════════════════════════════════════════
+   RUDRA-512 (v4 Architecture Parity in JS via BigInt)
+═════════════════════════════════════════════════════════════ */
 const MASK64 = (1n << 64n) - 1n;
-
 const INIT = [
-  0xcbbb9d5dc1059ed8n, 0x629a292a367cd507n,
-  0x9159015a3070dd17n, 0x152fecd8f70e5939n,
-  0x67332667ffc00b31n, 0x8eb44a8768581511n,
-  0xdb0c2e0d64f98fa7n, 0x47b5481dbefa4fa4n
+  0xcbbb9d5dc1059ed8n, 0x629a292a367cd507n, 0x9159015a3070dd17n, 0x152fecd8f70e5939n,
+  0x67332667ffc00b31n, 0x8eb44a8768581511n, 0xdb0c2e0d64f98fa7n, 0x47b5481dbefa4fa4n
 ];
-
 const ROT = [7, 11, 13, 19, 29, 37, 41, 47];
 const ROUND_ROT = [
-  17,38,23,30,28,12,13,12, 33,31,6,49,55,24,26,10,
-  41,49,26,50,58,1,42,26, 21,8,31,50,33,18,55,56,
-  62,19,54,47,47,20,51,29, 50,63,8,24,12,8,21,28,
-  36,41,12,20,49,37,57,17, 62,48,57,54,20,52,10,21
-];
+  3,5,7,11,13,17,19,23, 29,31,37,41,43,47,53,59,
+  61,2,4,6,8,10,12,14, 16,18,20,22,24,26,28,30,
+  32,34,36,38,40,42,44,46, 48,50,52,54,56,58,60,62,
+  1,9,15,21,25,27,33,35, 39,45,49,51,55,57,63,15
+]; // Updated from C++ code provided
 
-const PI_CONST = 0x243f6a8885a308d3n;
-const ESP_CONST = 0x517cc1b727220a95n;
-const TOKEN_CONST = 0x6c15b6c9aa27a8a4n;
+const DOM_STRING = 0x243f6a8885a308d3n;
+const DOM_TOKEN = 0x6c15b6c9aa27a8a4n;
+const DOM_SALT = 0xb5470917a2388f00n;
+const DOM_ROUNDS = 0x9e3779b97f4a7c15n;
+const GOLDEN = 0x9e3779b97f4a7c15n;
 
 function rotl64(x, r) {
   const rb = BigInt(r) & 63n;
   if (rb === 0n) return x & MASK64;
   return ((x << rb) | (x >> (64n - rb))) & MASK64;
 }
+function safe_rotl64(x, r) {
+  r = ((r % 63) + 63) % 63;
+  if (r === 0) r = 1;
+  return rotl64(x, r);
+}
 
-// [NC4] Simple hash for tokenization / salt
-function simpleHash(bytes) {
-  let h = TOKEN_CONST;
-  for (let i = 0; i < bytes.length; i++) {
-    h = (h ^ BigInt(bytes[i])) & MASK64;
-    h = rotl64(h, 13);
-    h = (h ^ (h >> 33n)) & MASK64;
+// SipHash-inspired mixer
+function mix64(v0, v1, v2, v3) {
+  v0 = (v0 + v1) & MASK64; v1 = rotl64(v1, 13); v1 = (v1 ^ v0) & MASK64; v0 = rotl64(v0, 32);
+  v2 = (v2 + v3) & MASK64; v3 = rotl64(v3, 16); v3 = (v3 ^ v2) & MASK64;
+  v0 = (v0 + v3) & MASK64; v3 = rotl64(v3, 21); v3 = (v3 ^ v0) & MASK64;
+  v2 = (v2 + v1) & MASK64; v1 = rotl64(v1, 17); v1 = (v1 ^ v2) & MASK64; v2 = rotl64(v2, 32);
+  return (v0 ^ v1 ^ v2 ^ v3) & MASK64;
+}
+
+function strong_hash(data, seed) {
+  let v0 = (seed ^ 0x736f6d6570736575n) & MASK64;
+  let v1 = (seed ^ 0x646f72616e646f6dn) & MASK64;
+  let v2 = (seed ^ 0x6c7967656e657261n) & MASK64;
+  let v3 = (seed ^ 0x7465646279746573n) & MASK64;
+  const blocks = Math.floor(data.length / 8);
+  for (let i = 0; i < blocks; i++) {
+    let m = 0n; for (let k = 0; k < 8; k++) m = (m | (BigInt(data[i * 8 + k]) << (BigInt(k) * 8n))) & MASK64;
+    v3 = (v3 ^ m) & MASK64;
+    v0 = mix64(v0, v1, v2, v3); v0 = mix64(v0, v1, v2, v3);
+    v0 = (v0 ^ m) & MASK64;
   }
-  return h;
+  let tail = BigInt(data.length) & 0xffn; tail = tail << 56n;
+  const rem = data.length % 8; const t = data.slice(blocks * 8);
+  if (rem >= 1) tail = (tail | BigInt(t[0])) & MASK64;
+  if (rem >= 2) tail = (tail | (BigInt(t[1]) << 8n)) & MASK64;
+  if (rem >= 3) tail = (tail | (BigInt(t[2]) << 16n)) & MASK64;
+  if (rem >= 4) tail = (tail | (BigInt(t[3]) << 24n)) & MASK64;
+  if (rem >= 5) tail = (tail | (BigInt(t[4]) << 32n)) & MASK64;
+  if (rem >= 6) tail = (tail | (BigInt(t[5]) << 40n)) & MASK64;
+  if (rem >= 7) tail = (tail | (BigInt(t[6]) << 48n)) & MASK64;
+  v3 = (v3 ^ tail) & MASK64; v0 = mix64(v0, v1, v2, v3); v0 = mix64(v0, v1, v2, v3); v0 = (v0 ^ tail) & MASK64;
+  v2 = (v2 ^ 0xffn) & MASK64;
+  for (let i = 0; i < 4; i++) v0 = mix64(v0, v1, v2, v3);
+  return (v0 ^ v1 ^ v2 ^ v3) & MASK64;
 }
 
-// [NC5] ESP: compute embedded salt position
-function computeSaltPos(inputBytes, saltBytes, saltHash) {
-  if (!saltBytes || saltBytes.length === 0) return -1;
-  const inputHash = simpleHash(inputBytes);
-  const maxPos = inputBytes.length > saltBytes.length
-    ? inputBytes.length - saltBytes.length : 0;
-  if (maxPos === 0) return 0;
-  return Number(((inputHash + saltHash) % BigInt(maxPos)));
+function hash_salt(salt) {
+  if (!salt || !salt.length) return DOM_SALT;
+  return strong_hash(salt, DOM_SALT);
 }
 
-// Build embedded message
-function buildEmbeddedMsg(inputBytes, saltBytes, saltHash) {
-  if (!saltBytes || saltBytes.length === 0) return [...inputBytes];
-  const pos = computeSaltPos(inputBytes, saltBytes, saltHash);
-  return [
-    ...inputBytes.slice(0, pos),
-    ...saltBytes,
-    ...inputBytes.slice(pos)
-  ];
+// Scattered Salt Injection (SSI)
+function build_scattered_message(inp, salt, rounds) {
+  if (!salt || !salt.length) return inp;
+  const total_len = inp.length + salt.length;
+  const salt_hash = strong_hash(salt, DOM_SALT);
+  const data_hash = strong_hash(inp, DOM_SALT ^ BigInt(rounds));
+  const positions = [];
+  
+  for (let i = 0; i < salt.length; i++) {
+    let h = (data_hash ^ ((salt_hash * BigInt(i + 1)) & MASK64) ^ ((GOLDEN * BigInt(rounds + i)) & MASK64)) & MASK64;
+    h = mix64(h, salt_hash, data_hash, GOLDEN ^ BigInt(i));
+    h = (h ^ (BigInt(salt[i]) * 0x517cc1b727220a95n)) & MASK64;
+    h = safe_rotl64(h, (i * 7 + rounds) % 62 + 1);
+    positions.push(Number(h % BigInt(total_len)));
+  }
+  
+  // De-collide
+  const occupied = new Array(total_len).fill(false);
+  for (let i = 0; i < salt.length; i++) {
+    let pos = positions[i];
+    while (occupied[pos]) pos = (pos + 1) % total_len;
+    occupied[pos] = true; positions[i] = pos;
+  }
+  
+  const result = new Uint8Array(total_len);
+  const is_salt = new Array(total_len).fill(false);
+  for (let i = 0; i < salt.length; i++) { result[positions[i]] = salt[i]; is_salt[positions[i]] = true; }
+  
+  let inp_idx = 0;
+  for (let j = 0; j < total_len && inp_idx < inp.length; j++) {
+    if (!is_salt[j]) result[j] = inp[inp_idx++];
+  }
+  return Array.from(result);
 }
 
-// [H5] Init state with rounds + salt
-function makeInitState(rounds, saltHash) {
-  const s = [...INIT];
-  const rTweak = (BigInt(rounds) * PI_CONST) & MASK64;
-  const sTweak = (saltHash ^ ESP_CONST) & MASK64;
-  s[0] = (s[0] ^ rTweak) & MASK64;
-  s[1] = (s[1] ^ sTweak) & MASK64;
-  s[7] = (s[7] ^ rotl64(rTweak, 32)) & MASK64;
-  s[6] = (s[6] ^ rotl64(sTweak, 32)) & MASK64;
-  return s;
+// Tokenization + pre-hash mixing
+function tokenize_and_mix(combined, salt, rounds) {
+  if (!combined.length) return combined;
+  const salt_len = salt ? salt.length : 0;
+  const buf_hash = strong_hash(combined, DOM_TOKEN);
+  const T = 2 + Number((buf_hash ^ (BigInt(salt_len) << 32n) ^ BigInt(rounds)) % 15n);
+  
+  const result = [];
+  const num_tokens = Math.ceil(combined.length / T);
+  
+  for (let ti = 0; ti < num_tokens; ti++) {
+    const start = ti * T, end = Math.min(start + T, combined.length);
+    let tok = combined.slice(start, end); const tlen = tok.length;
+    const th = strong_hash(tok, DOM_TOKEN ^ BigInt(ti));
+    
+    // Fisher-Yates
+    if (tlen > 1) {
+      let lcg = (th ^ (BigInt(ti) * DOM_ROUNDS)) & MASK64;
+      const idx = Array.from({ length: tlen }, (_, i) => i);
+      for (let k = tlen - 1; k > 0; k--) {
+        lcg = (lcg * 6364136223846793005n + 1442695040888963407n) & MASK64;
+        const j2 = Number((lcg >> 33n) % BigInt(k + 1));
+        [idx[k], idx[j2]] = [idx[j2], idx[k]];
+      }
+      tok = idx.map(i => tok[i]);
+    }
+    
+    // Rolling XOR
+    let key = (th ^ rotl64(buf_hash, (ti * 11 + 7) % 63 + 1)) & MASK64;
+    for (let k = 0; k < tlen; k++) {
+      tok[k] ^= Number((key >> (BigInt(k % 8) * 8n)) & 0xffn);
+      if (k % 8 === 7) key = mix64(key, th, buf_hash, BigInt(ti * tlen + k));
+    }
+    result.push(...tok);
+  }
+  return result;
 }
 
-// [NC6] State whitening
-function whitenState(s, rounds) {
-  permute(s, 2);
-}
-
-// [NC7][NC3] Permute with asymmetric rotations
 function permute(state, rounds) {
   for (let r = 0; r < rounds; r++) {
-    const mix  = (r % 7) + 1;
-    const mix2 = ((r + 2) % 7) + 1;
-    const mix3 = ((r + 4) % 7) + 1;
-    const old  = [...state];
-
+    const mix = (r % 7) + 1, mix2 = ((r + 2) % 7) + 1, mix3 = ((r + 4) % 7) + 1;
+    const old = [...state];
     for (let i = 0; i < 8; i++) {
       let v = (old[i] ^ rotl64(old[(i + mix) % 8], ROT[i])) & MASK64;
       v = (v + old[(i + mix2) % 8]) & MASK64;
-      // [NC7] Asymmetric rotation
-      const asymRot = (ROUND_ROT[(i * 5 + r * 9) % 64] + (i ^ r)) % 64;
-      v = rotl64(v, asymRot);
+      const aR = ROUND_ROT[(i * 5 + r * 9) % 64];
+      v = rotl64(v, aR === 0 ? 1 : aR); // Extra safety
       v = (v ^ (old[(i + 5) % 8] >> 17n)) & MASK64;
       state[i] = v;
     }
-    for (let i = 0; i < 8; i++) {
-      state[i] = (state[i] + rotl64(state[(i + mix3) % 8], ROT[(i + mix3) % 8])) & MASK64;
-    }
+    for (let i = 0; i < 8; i++) state[i] = (state[i] + rotl64(state[(i + mix3) % 8], ROT[(i + mix3) % 8])) & MASK64;
   }
 }
 
-// [NC8] Block index obfuscation
-function obfBlockIdx(blockIdx, saltHash) {
-  return BigInt(blockIdx) ^ saltHash;
+function make_init_state(rounds, salt_hash, domain) {
+  const s = [...INIT];
+  const rT = (BigInt(rounds) * DOM_ROUNDS) & MASK64;
+  const sT = (salt_hash ^ domain) & MASK64;
+  s[0] = (s[0] ^ rT) & MASK64; s[1] = (s[1] ^ sT) & MASK64;
+  s[2] = (s[2] ^ rotl64(rT ^ sT, 17)) & MASK64; s[3] = (s[3] ^ rotl64(sT, 13)) & MASK64;
+  s[4] = (s[4] ^ rotl64(rT, 41)) & MASK64; s[5] = (s[5] ^ (domain ^ rotl64(salt_hash, 29))) & MASK64;
+  s[6] = (s[6] ^ rotl64(rT, 32)) & MASK64; s[7] = (s[7] ^ rotl64(sT, 32)) & MASK64;
+  return s;
 }
 
-// Absorb block
-function absorbBlock(state, block64, blockIdx, saltHash, rounds) {
-  const obfIdx = obfBlockIdx(blockIdx, saltHash);
+const WK = [
+  0xa54ff53a5f1d36f1n, 0x510e527fade682d1n, 0x9b05688c2b3e6c1fn, 0x1f83d9abfb41bd6bn,
+  0x5be0cd19137e2179n, 0x7137449123ef65cdn, 0x367cd5071059ed8bn, 0xcbbb9d5dc105a7d0n
+];
+
+function whiten_state(s, salt_hash, rounds) {
+  for (let i = 0; i < 8; i++) s[i] = (s[i] ^ WK[i] ^ rotl64(salt_hash, (i * 7 + 3) % 63 + 1)) & MASK64;
+  permute(s, Math.max(2, Math.min(Math.floor(rounds / 4), 8)));
+}
+
+function absorb_block(state, block, bi, salt_hash, rounds) {
+  const obfI = (BigInt(bi) ^ salt_hash ^ rotl64(salt_hash, 32)) & MASK64;
   for (let j = 0; j < 8; j++) {
-    let word = 0n;
-    for (let k = 0; k < 8; k++) word = (word << 8n) | BigInt(block64[j * 8 + k]);
-    const tweakArg = (obfIdx + BigInt(j) + state[j]) & MASK64;
-    const tweak    = rotl64(tweakArg, ROT[j % 8]);
-    state[j] = (state[j] ^ word ^ tweak) & MASK64;
+    let w = 0n; for (let k = 0; k < 8; k++) w = (w << 8n) | BigInt(block[j * 8 + k]);
+    const tA = (obfI + BigInt(j) + state[j]) & MASK64;
+    const tw = rotl64(tA, ROT[j % 8]);
+    state[j] = (state[j] ^ w ^ tw) & MASK64;
   }
   permute(state, rounds);
 }
 
-// Main hash function
-function rudraHash(input, rounds, salt) {
-  if (rounds < 1) throw new Error('Rounds must be at least 1');
-
-  const inputBytes = [...new TextEncoder().encode(input)];
-  const saltBytes  = salt ? [...new TextEncoder().encode(salt)] : null;
-  const saltHash   = saltBytes ? simpleHash(saltBytes) : 0n;
-
-  const msgBytes = buildEmbeddedMsg(inputBytes, saltBytes, saltHash);
-  const totalLen = msgBytes.length;
-
-  // Merkle-Damgård padding
-  const padded = [...msgBytes];
-  const bitLen = BigInt(totalLen) * 8n;
-  padded.push(0x80);
-  while (padded.length % 64 !== 56) padded.push(0x00);
-  for (let i = 7; i >= 0; i--) padded.push(Number((bitLen >> BigInt(i * 8)) & 0xffn));
-
-  const state = makeInitState(rounds, saltHash);
-  whitenState(state, rounds);
-
-  let blockIdx = 0;
-  for (let off = 0; off < padded.length; off += 64, blockIdx++) {
-    absorbBlock(state, padded.slice(off, off + 64), blockIdx, saltHash, rounds);
-  }
+function rudraHashDivine(input, rounds, salt) {
+  if (rounds < 1 || rounds > 512) throw new Error('Rounds must be in [1, 512]');
+  const enc = new TextEncoder();
+  const inp = Array.from(enc.encode(input));
+  const slt = salt && salt.length ? Array.from(enc.encode(salt)) : null;
+  const salt_hash = hash_salt(slt);
+  
+  const combined = build_scattered_message(inp, slt, rounds);
+  const processed = tokenize_and_mix(combined, slt, rounds);
+  
+  const state = make_init_state(rounds, salt_hash, DOM_STRING);
+  whiten_state(state, salt_hash, rounds);
+  
+  const pad = [...processed];
+  const bitL = BigInt(processed.length) * 8n;
+  pad.push(0x80); while (pad.length % 64 !== 56) pad.push(0);
+  for (let i = 7; i >= 0; i--) pad.push(Number((bitL >> BigInt(i * 8)) & 0xffn));
+  
+  let bi = 0;
+  for (let off = 0; off < pad.length; off += 64, bi++) absorb_block(state, pad.slice(off, off + 64), bi, salt_hash, rounds);
   permute(state, rounds);
-
-  return {
-    hex: state.map(v => v.toString(16).padStart(16, '0')).join(''),
-    state
-  };
+  
+  return { hex: state.map(v => v.toString(16).padStart(16, '0')).join(''), state };
 }
 
-// ════════════════════════════════════════════════════════════
-// UI
-// ════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════
+   UI LOGIC (HASHING & VIZ)
+═════════════════════════════════════════════════════════════ */
 function computeHash() {
-  const msg    = document.getElementById('inputMsg').value;
-  const rounds = parseInt(document.getElementById('inputRounds').value) || 32;
-  const saltEl = document.getElementById('inputSalt').value.trim();
-  const salt   = saltEl === '' ? null : saltEl;
-
+  const msg = document.getElementById('inputMsg').value;
+  const rounds = Math.max(1, Math.min(512, parseInt(document.getElementById('inputRounds').value) || 32));
+  const saltRaw = document.getElementById('inputSalt').value;
+  const salt = saltRaw || null;
+  
   try {
     const t0 = performance.now();
-    const result = rudraHash(msg, rounds, salt);
+    const res = rudraHashDivine(msg, rounds, salt);
     const t1 = performance.now();
-
+    
     const box = document.getElementById('hashOutput');
     box.innerHTML = '';
-    for (let i = 0; i < 8; i++) {
+    
+    // Group into chunks of 8 characters for readability with flex wrap
+    for (let i = 0; i < 16; i++) {
       const sp = document.createElement('span');
       sp.className = 'hash-chunk';
-      sp.textContent = result.hex.slice(i * 16, i * 16 + 16);
+      sp.textContent = res.hex.slice(i * 8, i * 8 + 8);
       box.appendChild(sp);
     }
-
-    document.getElementById('timeLabel').textContent = `⏱ ${(t1 - t0).toFixed(2)}ms`;
-    document.getElementById('lenLabel').textContent  = `📏 input: ${msg.length} bytes → 128 hex chars`;
-    document.getElementById('saltLabel').textContent = salt ? `🧂 salt: "${salt}" (${salt.length} bytes, embedded)` : '🧂 salt: absent';
-
+    
+    document.getElementById('timeLabel').textContent = `${(t1 - t0).toFixed(2)}ms latency`;
+    document.getElementById('lenLabel').textContent = `${msg.length} bytes input`;
+    document.getElementById('saltLabel').textContent = salt ? `Salt: "${salt}" (SSI Applied)` : 'No Salt Provided';
+    
     document.getElementById('outputBox').classList.add('show');
-    showPaddingViz(inputBytes2paddedFor(msg, salt));
-    showState(result.state);
+    showPaddingViz(msg, salt, rounds);
+    showState(res.state);
+    
+    // Trigger Avalanche update
+    document.getElementById('avaA').value = msg;
+    document.getElementById('avaB').value = msg + "1";
     computeAvalanche();
-    resetStepper();
-  } catch(e) { alert(e.message); }
+    
+    // Reset Stepper
+    document.getElementById('btnFwd').disabled = true;
+    document.getElementById('btnBack').disabled = true;
+    document.getElementById('btnAuto').disabled = true;
+    document.getElementById('flowDiagram').innerHTML = 'Press <strong style="color:var(--gold-base)">Initialize State</strong> to load the current input into the stepper.';
+    
+  } catch(e) {
+    alert(e.message);
+  }
 }
 
-function inputBytes2paddedFor(input, salt) {
-  const inputBytes = [...new TextEncoder().encode(input)];
-  const saltBytes  = salt ? [...new TextEncoder().encode(salt)] : null;
-  const saltHash   = saltBytes ? simpleHash(saltBytes) : 0n;
-  const msgBytes   = buildEmbeddedMsg(inputBytes, saltBytes, saltHash);
-  const totalLen   = msgBytes.length;
-  const bitLen     = BigInt(totalLen) * 8n;
-  const padded     = [...msgBytes];
-  padded.push(0x80);
-  while (padded.length % 64 !== 56) padded.push(0x00);
-  for (let i = 7; i >= 0; i--) padded.push(Number((bitLen >> BigInt(i * 8)) & 0xffn));
+function showPaddingViz(input, salt, rounds) {
+  const enc = new TextEncoder();
+  const inp = Array.from(enc.encode(input));
+  const slt = salt && salt.length ? Array.from(enc.encode(salt)) : null;
+  
+  const combined = build_scattered_message(inp, slt, rounds);
+  const processed = tokenize_and_mix(combined, slt, rounds);
+  const pad = [...processed];
+  const bitL = BigInt(processed.length) * 8n;
+  pad.push(0x80); while (pad.length % 64 !== 56) pad.push(0);
+  for (let i = 7; i >= 0; i--) pad.push(Number((bitL >> BigInt(i * 8)) & 0xffn));
 
-  const inputBytes2 = [...new TextEncoder().encode(input)];
-  const saltBytes2  = saltBytes ? [...saltBytes] : null;
-  const saltPos     = saltBytes2 ? computeSaltPos(inputBytes2, saltBytes2, saltHash) : -1;
-
-  return { padded, inputLen: inputBytes.length, saltLen: saltBytes ? saltBytes.length : 0, saltPos };
-}
-
-function showPaddingViz({ padded, inputLen, saltLen, saltPos }) {
   const viz = document.getElementById('paddingViz');
   viz.innerHTML = '';
-  const limit = Math.min(padded.length, 128);
-  const lenSt = padded.length - 8;
-
-  // Figure out byte types from ESP structure
-  // embedded: [inputBytes(0..saltPos)] [saltBytes] [inputBytes(saltPos..)]
-  // Then padding
-  const msgAndSalt = padded.slice(0, inputLen + saltLen);
+  
+  const limit = Math.min(pad.length, 128); // max blocks to show
+  const msgEnd = processed.length;
+  const lenSt = pad.length - 8;
 
   for (let i = 0; i < limit; i++) {
     const cell = document.createElement('div');
-    if (i < inputLen + saltLen) {
-      // inside the pre-padding stream
-      const inSaltRegion = saltLen > 0 && i >= saltPos && i < saltPos + saltLen;
-      if (inSaltRegion) {
-        cell.className = 'byte-cell byte-salt';
-        cell.textContent = padded[i].toString(16).padStart(2,'0');
-      } else {
-        cell.className = 'byte-cell byte-msg';
-        const ch = String.fromCharCode(padded[i]);
-        cell.textContent = /[ -~]/.test(ch) ? ch : '·';
-      }
-    } else if (i === inputLen + saltLen) {
-      cell.className = 'byte-cell byte-pad';
-      cell.textContent = '80';
+    if (i < msgEnd) {
+      cell.className = 'pad-byte b-msg';
+      const ch = String.fromCharCode(pad[i]);
+      cell.textContent = /[ -~]/.test(ch) ? ch : '·';
+    } else if (i === msgEnd) {
+      cell.className = 'pad-byte b-pad'; cell.textContent = '80';
     } else if (i >= lenSt) {
-      cell.className = 'byte-cell byte-len';
-      cell.textContent = padded[i].toString(16).padStart(2,'0');
+      cell.className = 'pad-byte b-len'; cell.textContent = pad[i].toString(16).padStart(2, '0');
     } else {
-      cell.className = 'byte-cell byte-zero';
-      cell.textContent = '00';
+      cell.className = 'pad-byte b-zero'; cell.textContent = '00';
     }
     viz.appendChild(cell);
   }
-  if (padded.length > 128) {
-    const m = document.createElement('div');
-    m.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:11px;color:var(--muted);padding:8px;align-self:center';
-    m.textContent = `+${padded.length - 128} more bytes`;
-    viz.appendChild(m);
+  
+  if(pad.length > 128) {
+    const overflow = document.createElement('div');
+    overflow.style.cssText = 'color: var(--ash-muted); align-self: center; font-size: 10px; margin-left: 10px;';
+    overflow.textContent = `+ ${pad.length - 128} bytes hidden`;
+    viz.appendChild(overflow);
   }
   document.getElementById('paddingSection').style.display = 'block';
 }
@@ -846,275 +1302,226 @@ function showState(state) {
   grid.innerHTML = '';
   state.forEach((w, i) => {
     const b = document.createElement('div');
-    b.className = 'word-box';
-    b.innerHTML = `<div class="word-label">s[${i}]</div><div class="word-val">${w.toString(16).padStart(16,'0')}</div>`;
+    b.className = 'state-word';
+    b.innerHTML = `<div class="word-lbl">Register [${i}]</div><div class="word-val">${w.toString(16).padStart(16, '0')}</div>`;
     grid.appendChild(b);
   });
   document.getElementById('stateSection').style.display = 'block';
 }
 
-// ════════════════════════════════════════════════════════════
-// PERMUTATION STEPPER
-// ════════════════════════════════════════════════════════════
-let ST = { steps:[], idx:0, state:null, history:[], done:false, auto:null };
-let _permSnap = null;
+/* ═════════════════════════════════════════════════════════════
+   STEPPER LOGIC
+═════════════════════════════════════════════════════════════ */
+let STEP_STATE = { steps: [], idx: 0, state: null, salt_hash: 0n, pad: [], autoInterval: null, history: [], snap: null, lastHIdx: -1 };
 
-function getCurrentPadded2() {
-  const msg    = document.getElementById('inputMsg').value;
-  const saltEl = document.getElementById('inputSalt').value.trim();
-  const salt   = saltEl === '' ? null : saltEl;
-  const inputBytes = [...new TextEncoder().encode(msg)];
-  const saltBytes  = salt ? [...new TextEncoder().encode(salt)] : null;
-  const saltHash   = saltBytes ? simpleHash(saltBytes) : 0n;
-  const msgBytes   = buildEmbeddedMsg(inputBytes, saltBytes, saltHash);
-  const totalLen   = msgBytes.length;
-  const bitLen     = BigInt(totalLen) * 8n;
-  const padded     = [...msgBytes];
-  padded.push(0x80);
-  while (padded.length % 64 !== 56) padded.push(0x00);
-  for (let i = 7; i >= 0; i--) padded.push(Number((bitLen >> BigInt(i * 8)) & 0xffn));
-  return padded;
-}
+function initStepper() {
+  const msg = document.getElementById('inputMsg').value;
+  const rounds = Math.max(1, parseInt(document.getElementById('inputRounds').value) || 32);
+  const saltRaw = document.getElementById('inputSalt').value;
+  const salt = saltRaw || null;
 
-function buildSteps(rounds, padded) {
+  const enc = new TextEncoder();
+  const inp = Array.from(enc.encode(msg));
+  const slt = salt && salt.length ? Array.from(enc.encode(salt)) : null;
+  const salt_hash = hash_salt(slt);
+  
+  const combined = build_scattered_message(inp, slt, rounds);
+  const processed = tokenize_and_mix(combined, slt, rounds);
+  const pad = [...processed];
+  const bitL = BigInt(processed.length) * 8n;
+  pad.push(0x80); while (pad.length % 64 !== 56) pad.push(0);
+  for (let i = 7; i >= 0; i--) pad.push(Number((bitL >> BigInt(i * 8)) & 0xffn));
+
+  // Build Operations list
   const steps = [];
-  const numBlocks = padded.length / 64;
-  for (let b = 0; b < numBlocks; b++) {
-    for (let j = 0; j < 8; j++) {
-      steps.push({ phase: `absorb_block ${b}${b === numBlocks-1 ? ' (padding)' : ''}`, type:'absorb', blockIdx:b, j, off:b*64 });
-    }
+  const nb = pad.length / 64;
+  for (let b = 0; b < nb; b++) {
+    steps.push({ phase: `Absorb Block ${b+1}/${nb}`, type: 'absorb', blockIdx: b, off: b * 64 });
     for (let r = 0; r < rounds; r++) {
-      const mix=(r%7)+1, mix2=((r+2)%7)+1, mix3=((r+4)%7)+1;
-      for (let i = 0; i < 8; i++) {
-        const asymRot = (ROUND_ROT[(i*5+r*9)%64] + (i^r)) % 64;
-        steps.push({ phase:`permute (block ${b})`, type:'perm_word', r, i, mix, mix2, rot:asymRot });
-      }
-      steps.push({ phase:`permute (block ${b})`, type:'perm_cross', r, mix3:((r+4)%7)+1 });
+      for (let i = 0; i < 8; i++) steps.push({ phase: `Permute R${r+1}`, type: 'perm_w', r, i, mix: (r%7)+1, mix2: ((r+2)%7)+1, rot: (ROUND_ROT[(i*5+r*9)%64])||1 });
+      steps.push({ phase: `Cross R${r+1}`, type: 'perm_c', r, mix3: ((r+4)%7)+1 });
     }
   }
-  // final permute
   for (let r = 0; r < rounds; r++) {
-    const mix=(r%7)+1, mix2=((r+2)%7)+1, mix3=((r+4)%7)+1;
-    for (let i = 0; i < 8; i++) {
-      const asymRot = (ROUND_ROT[(i*5+r*9)%64] + (i^r)) % 64;
-      steps.push({ phase:'final permutation', type:'perm_word', r, i, mix, mix2, rot:asymRot });
-    }
-    steps.push({ phase:'final permutation', type:'perm_cross', r, mix3 });
+    for (let i = 0; i < 8; i++) steps.push({ phase: `Final R${r+1}`, type: 'perm_w', r, i, mix: (r%7)+1, mix2: ((r+2)%7)+1, rot: (ROUND_ROT[(i*5+r*9)%64])||1 });
+    steps.push({ phase: `Final Cross R${r+1}`, type: 'perm_c', r, mix3: ((r+4)%7)+1 });
   }
-  steps.push({ phase:'done', type:'done' });
-  return steps;
+  steps.push({ phase: 'Complete', type: 'done' });
+
+  STEP_STATE.steps = steps;
+  STEP_STATE.idx = 0;
+  STEP_STATE.history = [];
+  STEP_STATE.salt_hash = salt_hash;
+  STEP_STATE.pad = pad;
+  STEP_STATE.state = make_init_state(rounds, salt_hash, DOM_STRING);
+  whiten_state(STEP_STATE.state, salt_hash, rounds);
+  STEP_STATE.snap = null;
+  STEP_STATE.lastHIdx = -1;
+  
+  if(STEP_STATE.autoInterval) clearInterval(STEP_STATE.autoInterval);
+  STEP_STATE.autoInterval = null;
+
+  document.getElementById('btnFwd').disabled = false;
+  document.getElementById('btnBack').disabled = true;
+  document.getElementById('btnAuto').disabled = false;
+  document.getElementById('btnAuto').innerHTML = '⚡ Auto Execute';
+  
+  renderStepperGrid(STEP_STATE.state, -1);
+  document.getElementById('flowDiagram').innerHTML = '<span style="color:var(--ash-muted)">Initialization complete. Ready to begin permutations.</span>';
+  updateStepLabels('Ready', 'Idle');
 }
 
-function applyStep(step, state, padded) {
-  let html = '', hi = -2;
-  const h16 = v => v.toString(16).padStart(16,'0');
-  const saltEl = document.getElementById('inputSalt').value.trim();
-  const salt   = saltEl === '' ? null : saltEl;
-  const saltBytes = salt ? [...new TextEncoder().encode(salt)] : null;
-  const saltHash  = saltBytes ? simpleHash(saltBytes) : 0n;
+function stepBack() {
+  if (STEP_STATE.history.length === 0) return;
+  if (STEP_STATE.autoInterval) toggleAuto();
 
-  if (step.type === 'absorb') {
-    const { blockIdx, j, off } = step;
-    let word = 0n;
-    for (let k = 0; k < 8; k++) word = (word << 8n) | BigInt(padded[off + j*8 + k]);
-    const obfIdx = obfBlockIdx(blockIdx, saltHash);
-    const tweakArg = (obfIdx + BigInt(j) + state[j]) & MASK64;
-    const tweak    = rotl64(tweakArg, ROT[j % 8]);
-    const before   = state[j];
-    state[j] = (before ^ word ^ tweak) & MASK64;
-    hi = j;
-    html = `<div class="phase-badge">${step.phase}</div>
-<div class="flow-row">
-  <div class="flow-label">s[${j}]</div>
-  <div class="flow-box">${h16(before)}</div>
-  <div class="flow-op">XOR word</div>
-  <div class="flow-box">${h16(word)}</div>
-  <div class="flow-op">XOR obf-tweak</div>
-  <div class="flow-box">${h16(tweak)}</div>
-  <div class="flow-arrow">→</div>
-  <div class="flow-box flow-result">${h16(state[j])}</div>
-</div>`;
-  } else if (step.type === 'perm_word') {
-    const { r, i, mix, mix2, rot } = step;
-    if (i === 0) _permSnap = [...state];
-    const old = _permSnap;
-    let v = (old[i] ^ rotl64(old[(i+mix)%8], ROT[i])) & MASK64;
-    v = (v + old[(i+mix2)%8]) & MASK64;
+  STEP_STATE.idx--;
+  const prev = STEP_STATE.history.pop();
+  
+  STEP_STATE.state = prev.state;
+  STEP_STATE.snap = prev.snap;
+  STEP_STATE.lastHIdx = prev.hIdx;
+  
+  document.getElementById('flowDiagram').innerHTML = prev.html;
+  renderStepperGrid(STEP_STATE.state, STEP_STATE.lastHIdx);
+  
+  const step = STEP_STATE.steps[STEP_STATE.idx];
+  if (step) updateStepLabels(step.phase, step.type);
+  
+  document.getElementById('btnFwd').disabled = false;
+  document.getElementById('btnAuto').disabled = false;
+  document.getElementById('btnBack').disabled = STEP_STATE.history.length === 0;
+}
+
+function stepFwd() {
+  if(STEP_STATE.idx >= STEP_STATE.steps.length) return;
+
+  // Save history before modifying
+  STEP_STATE.history.push({
+    state: [...STEP_STATE.state],
+    snap: STEP_STATE.snap ? [...STEP_STATE.snap] : null,
+    html: document.getElementById('flowDiagram').innerHTML,
+    hIdx: STEP_STATE.lastHIdx
+  });
+
+  const step = STEP_STATE.steps[STEP_STATE.idx++];
+  const s = STEP_STATE.state;
+  let html = '', hIdx = -1;
+  const hex = v => v.toString(16).padStart(16,'0');
+
+  if(step.type === 'absorb') {
+    const obfI = (BigInt(step.blockIdx) ^ STEP_STATE.salt_hash ^ rotl64(STEP_STATE.salt_hash, 32)) & MASK64;
+    for (let j = 0; j < 8; j++) {
+      let w = 0n; for (let k = 0; k < 8; k++) w = (w << 8n) | BigInt(STEP_STATE.pad[step.off + j * 8 + k]);
+      const tw = rotl64((obfI + BigInt(j) + s[j]) & MASK64, ROT[j % 8]);
+      s[j] = (s[j] ^ w ^ tw) & MASK64;
+    }
+    html = `<strong style="color:var(--gold-base)">Absorbing 64-byte chunk</strong><br/>XORing data words and tweaks into state.`;
+  } 
+  else if (step.type === 'perm_w') {
+    const { i, mix, mix2, rot } = step;
+    // Snapshot the state at the beginning of the round so it represents 'old' accurately across i=0..7 updates
+    if (i === 0) STEP_STATE.snap = [...s]; 
+    let old = STEP_STATE.snap; 
+    
+    let v = (old[i] ^ rotl64(old[(i + mix) % 8], ROT[i])) & MASK64;
+    v = (v + old[(i + mix2) % 8]) & MASK64;
     v = rotl64(v, rot);
-    v = (v ^ (old[(i+5)%8] >> 17n)) & MASK64;
-    state[i] = v;
-    hi = i;
-    html = `<div class="phase-badge">${step.phase} · r=${r} · [NC7] asym rot=${rot}</div>
-<div class="flow-row">
-  <div class="flow-label">s[${i}]</div>
-  <div class="flow-box">${h16(old[i])}</div>
-  <div class="flow-op">^rotl(s[${(i+mix)%8}],${ROT[i]})</div>
-  <div class="flow-arrow">→</div>
-  <div class="flow-box">${h16((old[i]^rotl64(old[(i+mix)%8],ROT[i]))&MASK64)}</div>
-  <div class="flow-op">+s[${(i+mix2)%8}] → rotl(${rot})</div>
-  <div class="flow-arrow">→</div>
-  <div class="flow-box flow-result">${h16(v)}</div>
-</div>`;
-  } else if (step.type === 'perm_cross') {
-    const { r, mix3 } = step;
-    for (let i = 0; i < 8; i++) {
-      state[i] = (state[i] + rotl64(state[(i+mix3)%8], ROT[(i+mix3)%8])) & MASK64;
-    }
-    hi = -1;
-    html = `<div class="phase-badge">${step.phase} · r=${r} · cross-mix</div>
-<div class="flow-row">
-  <div class="flow-op">s[i] += rotl(s[(i+${mix3})%8], ROT[(i+${mix3})%8]) for all i</div>
-  <div class="flow-box flow-result">${state.map(v=>h16(v).slice(0,8)+'…').join(' ')}</div>
-</div>`;
-  } else if (step.type === 'done') {
-    hi = -1;
-    html = `<div class="phase-badge">done</div>
-<div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green);padding:8px 0">✓ All rounds complete — digest:</div>
-<div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);word-break:break-all;line-height:1.8">${state.map(v=>h16(v)).join('')}</div>`;
+    v = (v ^ (old[(i + 5) % 8] >> 17n)) & MASK64;
+    s[i] = v;
+    hIdx = i;
+    html = `v = <span style="color:var(--ganga-cyan)">s[${i}]</span> ^ rotl(s[${(i+mix)%8}], ${ROT[i]})<br/>v = (v + s[${(i+mix2)%8}])<br/>v = rotl(v, ${rot}) ^ (s[${(i+5)%8}] >> 17)<br/><strong style="color:var(--gold-light)">s[${i}] -> ${hex(v)}</strong>`;
   }
-  return { html, hi };
+  else if (step.type === 'perm_c') {
+    for (let i = 0; i < 8; i++) s[i] = (s[i] + rotl64(s[(i + step.mix3) % 8], ROT[(i + step.mix3) % 8])) & MASK64;
+    html = `<strong style="color:var(--kailash-blue)">Cross-mixing all words</strong><br/>s[i] += rotl(s[(i+${step.mix3})%8], ROT[(i+${step.mix3})%8])`;
+  }
+  else if (step.type === 'done') {
+    html = `<strong style="color:var(--third-eye)">DIGEST FINALIZED</strong><br/><div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">${s.map(v => `<span class="hash-chunk">${hex(v).slice(0,8)}</span><span class="hash-chunk">${hex(v).slice(8,16)}</span>`).join('')}</div>`;
+    document.getElementById('btnFwd').disabled = true;
+    document.getElementById('btnAuto').disabled = true;
+    if(STEP_STATE.autoInterval) { clearInterval(STEP_STATE.autoInterval); STEP_STATE.autoInterval = null; }
+  }
+
+  STEP_STATE.lastHIdx = hIdx;
+  document.getElementById('flowDiagram').innerHTML = html;
+  renderStepperGrid(s, hIdx);
+  updateStepLabels(step.phase, step.type);
+  document.getElementById('btnBack').disabled = false;
 }
 
-function renderStepGrid(state, hi) {
+function toggleAuto() {
+  const btn = document.getElementById('btnAuto');
+  if (STEP_STATE.autoInterval) {
+    clearInterval(STEP_STATE.autoInterval);
+    STEP_STATE.autoInterval = null;
+    btn.innerHTML = '⚡ Auto Execute';
+  } else {
+    btn.innerHTML = '⏸ Pause';
+    STEP_STATE.autoInterval = setInterval(stepFwd, 50);
+  }
+}
+
+function renderStepperGrid(state, hIdx) {
   const grid = document.getElementById('stepStateGrid');
-  if (!state) { grid.innerHTML = ''; return; }
   grid.innerHTML = '';
   state.forEach((w, i) => {
     const b = document.createElement('div');
-    b.className = 'word-box' + (hi === -1 || hi === i ? ' changed' : '');
-    b.innerHTML = `<div class="word-label">s[${i}]</div><div class="word-val">${w.toString(16).padStart(16,'0')}</div>`;
+    b.className = 'state-word' + (i === hIdx || hIdx === -1 ? ' highlight' : '');
+    b.innerHTML = `<div class="word-lbl">Register [${i}]</div><div class="word-val">${w.toString(16).padStart(16, '0')}</div>`;
     grid.appendChild(b);
   });
 }
 
-function updateStepperButtons() {
-  document.getElementById('btnBack').style.display = ST.history.length > 0 ? '' : 'none';
-  document.getElementById('btnFwd').disabled  = ST.done;
-  document.getElementById('btnAuto').disabled = ST.done;
+function updateStepLabels(phase, op) {
+  document.getElementById('lblPhase').textContent = phase;
+  document.getElementById('lblOp').textContent = op;
 }
 
-function updateStepperLabel() {
-  if (!ST.steps.length) return;
-  const s = ST.steps[Math.min(ST.idx, ST.steps.length - 1)];
-  document.getElementById('phaseLabel').textContent = s.phase || '—';
-  document.getElementById('roundLabel').textContent = s.r !== undefined ? s.r : '—';
-  document.getElementById('wordLabel').textContent  = s.i !== undefined ? s.i : (s.j !== undefined ? s.j : 'all');
-  document.getElementById('opLabel').textContent    = s.type || '—';
-}
-
-function initStepper() {
-  const rounds = parseInt(document.getElementById('inputRounds').value) || 32;
-  if (rounds < 1) return;
-  const saltEl = document.getElementById('inputSalt').value.trim();
-  const salt   = saltEl === '' ? null : saltEl;
-  const saltBytes = salt ? [...new TextEncoder().encode(salt)] : null;
-  const saltHash  = saltBytes ? simpleHash(saltBytes) : 0n;
-  const padded    = getCurrentPadded2();
-  ST.steps   = buildSteps(rounds, padded);
-  ST.state   = makeInitState(rounds, saltHash);
-  whitenState(ST.state, rounds);
-  ST.idx = 0; ST.history = []; ST.done = false; _permSnap = null;
-}
-
-function stepFwd() {
-  if (!ST.steps.length) initStepper();
-  if (ST.done) return;
-  const padded = getCurrentPadded2();
-  const step   = ST.steps[ST.idx];
-  ST.history.push({ state:[...ST.state], idx:ST.idx, html:document.getElementById('flowDiagram').innerHTML, snap:_permSnap?[..._permSnap]:null });
-  const { html, hi } = applyStep(step, ST.state, padded);
-  document.getElementById('flowDiagram').innerHTML = html;
-  ST.idx++;
-  if (step.type === 'done') ST.done = true;
-  updateStepperLabel(); renderStepGrid(ST.state, hi); updateStepperButtons();
-}
-
-function stepBack() {
-  if (!ST.history.length) return;
-  stopAuto();
-  const prev = ST.history.pop();
-  ST.state = [...prev.state]; ST.idx = prev.idx; ST.done = false;
-  _permSnap = prev.snap ? [...prev.snap] : null;
-  document.getElementById('flowDiagram').innerHTML = prev.html;
-  updateStepperLabel(); renderStepGrid(ST.state, -2); updateStepperButtons();
-}
-
-function resetStepper() {
-  stopAuto();
-  ST = { steps:[], idx:0, state:null, history:[], done:false, auto:null }; _permSnap = null;
-  document.getElementById('flowDiagram').innerHTML = '<div style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--muted);text-align:center;padding:20px">Click "Step Forward" to begin stepping through the Rudra-512 v3 pipeline</div>';
-  document.getElementById('stepStateGrid').innerHTML = '';
-  ['phaseLabel','roundLabel','wordLabel','opLabel'].forEach(id => document.getElementById(id).textContent = '—');
-  document.getElementById('btnFwd').disabled = false;
-  document.getElementById('btnAuto').disabled = false;
-  document.getElementById('btnBack').style.display = 'none';
-  document.getElementById('btnAuto').textContent = 'Auto Run';
-}
-
-function stopAuto() {
-  if (ST.auto) { clearInterval(ST.auto); ST.auto = null; }
-  document.getElementById('btnAuto').textContent = 'Auto Run';
-}
-
-function toggleAuto() {
-  if (ST.auto) { stopAuto(); return; }
-  if (!ST.steps.length) initStepper();
-  if (ST.done) return;
-  document.getElementById('btnAuto').textContent = 'Pause';
-  ST.auto = setInterval(() => { if (ST.done) { stopAuto(); return; } stepFwd(); }, 60);
-}
-
-// ════════════════════════════════════════════════════════════
-// AVALANCHE
-// ════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════
+   AVALANCHE EFFECT
+═════════════════════════════════════════════════════════════ */
 function computeAvalanche() {
   const a = document.getElementById('avaA').value;
   const b = document.getElementById('avaB').value;
   if (!a || !b) return;
-  const rounds = parseInt(document.getElementById('inputRounds').value) || 32;
-  let hA, hB;
-  try { hA = rudraHash(a, rounds, null).hex; hB = rudraHash(b, rounds, null).hex; }
-  catch(e) { return; }
-
-  let changed = 0;
-  const aHtml = [], bHtml = [];
-  for (let i = 0; i < hA.length; i++) {
-    const bA = parseInt(hA[i],16).toString(2).padStart(4,'0');
-    const bB = parseInt(hB[i],16).toString(2).padStart(4,'0');
-    for (let k = 0; k < 4; k++) {
-      if (bA[k] !== bB[k]) {
-        changed++;
-        aHtml.push(`<span class="bit-changed">${bA[k]}</span>`);
-        bHtml.push(`<span class="bit-changed">${bB[k]}</span>`);
-      } else {
-        aHtml.push(`<span class="bit-same">${bA[k]}</span>`);
-        bHtml.push(`<span class="bit-same">${bB[k]}</span>`);
+  const rounds = Math.max(1, parseInt(document.getElementById('inputRounds').value) || 32);
+  
+  try {
+    const hA = rudraHashDivine(a, rounds, null).hex;
+    const hB = rudraHashDivine(b, rounds, null).hex;
+    
+    let changed = 0; const outA = [], outB = [];
+    
+    for (let i = 0; i < hA.length; i++) {
+      const binA = parseInt(hA[i], 16).toString(2).padStart(4, '0');
+      const binB = parseInt(hB[i], 16).toString(2).padStart(4, '0');
+      for (let k = 0; k < 4; k++) {
+        if (binA[k] !== binB[k]) {
+          changed++;
+          outA.push(`<span class="bit-diff">${binA[k]}</span>`);
+          outB.push(`<span class="bit-diff">${binB[k]}</span>`);
+        } else {
+          outA.push(`<span class="bit-same">${binA[k]}</span>`);
+          outB.push(`<span class="bit-same">${binB[k]}</span>`);
+        }
       }
+      if ((i + 1) % 8 === 0) { outA.push(' '); outB.push(' '); }
     }
-    if ((i+1) % 8 === 0) {
-      aHtml.push('<span style="color:var(--border)"> </span>');
-      bHtml.push('<span style="color:var(--border)"> </span>');
-    }
+    
+    const pct = ((changed / 512) * 100).toFixed(2);
+    document.getElementById('avaHashA').innerHTML = outA.join('');
+    document.getElementById('avaHashB').innerHTML = outB.join('');
+    document.getElementById('avaPct').textContent = pct + '%';
+    document.getElementById('avaBits').textContent = `${changed} / 512 Bits Changed`;
+    document.getElementById('avaBar').style.width = pct + '%';
+    
+    document.getElementById('avaGrid').style.display = 'grid';
+    document.getElementById('avaScore').style.display = 'block';
+  } catch (e) {
+    console.warn("Avalanche computation aborted (likely empty string bounds).");
   }
-  const pct = ((changed/512)*100).toFixed(1);
-  document.getElementById('avaHashA').innerHTML = aHtml.join('');
-  document.getElementById('avaHashB').innerHTML = bHtml.join('');
-  document.getElementById('avaPct').textContent  = pct + '%';
-  document.getElementById('avaBits').textContent = `${changed} / 512 bits changed`;
-  document.getElementById('avaBar').style.width  = pct + '%';
-  document.getElementById('avaGrid').style.display  = 'grid';
-  document.getElementById('avaScore').style.display = 'block';
 }
-
-// ════════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════════
-window.addEventListener('load', () => {
-  computeHash();
-  computeAvalanche();
-  document.getElementById('inputMsg').addEventListener('keydown',  e => { if(e.key==='Enter') computeHash(); });
-  document.getElementById('inputSalt').addEventListener('keydown', e => { if(e.key==='Enter') computeHash(); });
-});
 </script>
 </body>
 </html>

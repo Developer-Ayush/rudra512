@@ -712,7 +712,7 @@ Contributions are welcome! For significant changes, please open an issue first t
 
 ## Changelog
 
-### v3.0.0
+### v4.0.0
 
 - Initial release
 - Python bindings via pybind11 (`hash_string`, `hash_file`)

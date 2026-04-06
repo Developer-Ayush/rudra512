@@ -1,6 +1,6 @@
 {
   "name": "rudra-512-hash",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Rudra-512 cryptographic hash function",
   "main": "index.js",
   "bin": {
