@@ -11,6 +11,7 @@
 [![C++](https://img.shields.io/badge/Core-C%2B%2B17-blue)](https://github.com/Developer-Ayush/rudra512)
 [![PyPI version](https://badge.fury.io/py/rudra-512-hash.svg)](https://pypi.org/project/rudra-512-hash/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+![Status](https://img.shields.io/badge/status-research-orange)
 
 
 </div>
@@ -30,6 +31,13 @@ Output: a3f1c8...e92b14  (128 hex characters, always)
 
 ---
 
+## 📄 Research Paper
+
+The full specification of Rudra-512 is available here:
+
+*(Coming soon — submission to IACR ePrint Archive)*
+
+---
 
 ## Key Features
 
@@ -38,7 +46,7 @@ Output: a3f1c8...e92b14  (128 hex characters, always)
 | ⚙️ **Native C++ core** | Implementation with Python & Node.js bindings |
 | 🔁 **Configurable rounds** | Increases computational cost per hash |
 | 🌊 **Avalanche behavior** | Observed near ~50% bit change (empirical, not formally proven) |
-| 🔐 **512-bit output** | 128-character hex digest for strong collision resistance |
+| 🔐 **512-bit output** | 128-character hex digest intended to provide strong collision resistance |
 | 🧂 **Salt support** | Optional per-hash salt for added uniqueness |
 | 🔁 **Configurable rounds** | Tune the security/performance tradeoff (default: 32) |
 | 📁 **File hashing** | Built-in support for hashing files directly from disk |
@@ -231,7 +239,7 @@ rudra --file document.pdf --rounds 64 --salt mysecret
 
 The `rounds` parameter is the primary knob for tuning Rudra-512 between raw speed and GPU-brute-force resistance.
 
-**How it works:** Each round adds one full compression pass over the internal 512-bit state. More rounds = more CPU work per hash. For a legitimate user hashing one password, the difference between 32 and 128 rounds is milliseconds. For a GPU cluster attempting billions of guesses per second, it's the increasing rounds increases computational cost per hash, which may impact brute-force feasibility depending on context.
+**How it works:** Each round adds one full compression pass over the internal 512-bit state. More rounds = more CPU work per hash. For a legitimate user hashing one password, the difference between 32 and 128 rounds is milliseconds. For a GPU cluster attempting billions of guesses per second, increasing rounds raises computational cost per hash, which is designed to impact brute-force feasibility depending on context.
 
 > **Rule of thumb:** Use fewer rounds for speed-critical, non-secret data. Use more rounds wherever a hash could be attacked offline (passwords, secrets, credentials).
 
@@ -298,7 +306,7 @@ const token = rudra.hash(longUrl, 16).slice(0, 10);
 
 ### 32 Rounds — Default ⭐
 
-The default. Balances strong cryptographic properties with practical throughput. Suitable for any general hashing need where you don't specifically need password-level GPU resistance.
+The default. Balances intended cryptographic properties with practical throughput. Suitable for any general hashing need where you don't specifically need password-level GPU resistance.
 
 **When to use:**
 
@@ -332,12 +340,12 @@ Doubles the work per hash compared to the default. At this level, GPU-based offl
 **When to use:**
 
 - **Password hashing** — Hash user passwords with a per-user salt before storing in your database. (See Password Hashing example below.)
-- **Session token derivation** — Derive session identifiers from user credentials + entropy that resist offline cracking if the session store leaks.
+- **Session token derivation** — Derive session identifiers from user credentials + entropy that are designed to resist offline cracking if the session store leaks.
 - **PII tokenization** — Irreversibly tokenize emails, SSNs, or phone numbers for pseudonymous analytics without storing raw PII.
 - **Financial audit trails** — Hash transaction records with a salt for tamper-evident, non-reversible audit logs.
 - **Secret derivation** — Derive sub-keys or HMAC-like secrets from a master key without exposing the master.
 - **Recovery code hashing** — Hash one-time recovery codes before storing so they can't be recovered from the DB.
-- **Email unsubscribe links** — Stateless one-click links derived from user ID + secret that resist forgery.
+- **Email unsubscribe links** — Stateless one-click links derived from user ID + secret that are intended to resist forgery.
 
 ```python
 # High security — GPU brute-force is now significantly harder
@@ -360,7 +368,7 @@ At 128+ rounds, each hash is slow enough that offline GPU attacks become practic
 - **High-value credential hashing** — Admin passwords, hardware security module seeds, or recovery master keys.
 - **Air-gapped systems** — Hash secrets on air-gapped machines where brute-force resistance justifies latency.
 - **Cryptanalysis research** — Deliberately slow hashing for academic security margin studies.
-- **Escrow / vault secrets** — Long-lived secrets that will never be rotated and must survive future hardware advances.
+- **Escrow / vault secrets** — Long-lived secrets that will never be rotated and are intended to survive future hardware advances.
 
 ```python
 # Maximum resistance — use where latency is acceptable and the secret is critical
@@ -409,8 +417,8 @@ Rudra-512 covers a wide range of hashing scenarios. The recommended round count 
 
 | Use Case | Rounds | Notes |
 |---|---|---|
-| **Password storage** | 64 | Always combine with a per-user salt. 64+ rounds makes GPU cracking impractical. |
-| **Session token derivation** | 64 | Derive tokens from credentials + entropy; resistant to offline cracking if session store leaks. |
+| **Password storage** | 64 | Always combine with a per-user salt. 64+ rounds is designed to make GPU cracking impractical. |
+| **Session token derivation** | 64 | Derive tokens from credentials + entropy; intended to resist offline cracking if session store leaks. |
 | **API key hashing** | 32 | Store only the hash; compare on each request. No GPU risk since keys are random. |
 | **PII tokenization** | 64 | Irreversibly pseudonymize emails, SSNs, or phone numbers for analytics. |
 | **Recovery code hashing** | 64 | Hash one-time recovery/backup codes before storing so they can't be recovered from the DB. |
@@ -461,7 +469,7 @@ Rudra-512 covers a wide range of hashing scenarios. The recommended round count 
 | Use Case | Rounds | Notes |
 |---|---|---|
 | **URL shortener tokens** | 16 | Short, stable tokens from long URLs — speed over security. |
-| **Email unsubscribe links** | 64 | Stateless one-click links derived from user ID + secret; resistant to forgery. |
+| **Email unsubscribe links** | 64 | Stateless one-click links derived from user ID + secret; designed to resist forgery. |
 | **Message deduplication** | 8–16 | Fingerprint queue messages (Kafka, SQS, RabbitMQ) to detect and drop duplicates. |
 | **Content addressing** | 32 | Deterministic unique IDs for media blobs, documents, or data chunks. |
 | **Avatar / Identicon generation** | 16 | Hash a username or email to a stable value that drives a deterministic visual. |
