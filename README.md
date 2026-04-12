@@ -7,9 +7,9 @@
 > ⚠️ **Warning:** Rudra-512 is a research-oriented hash function and is **not a production-ready cryptographic primitive**.  
 > It has not undergone formal third-party cryptanalysis and should not be used in security-critical applications.
 
-[![npm version](https://badge.fury.io/js/rudra-512-hash.svg)](https://www.npmjs.com/package/rudra-512-hash)
+[![npm version](https://img.shields.io/npm/v/rudra-512-hash.svg)](https://www.npmjs.com/package/rudra-512-hash)
 [![C++](https://img.shields.io/badge/Core-C%2B%2B17-blue)](https://github.com/Developer-Ayush/rudra512)
-[![PyPI version](https://badge.fury.io/py/rudra-512-hash.svg)](https://pypi.org/project/rudra-512-hash/)
+[![PyPI version](https://img.shields.io/pypi/v/rudra-512-hash.svg)](https://pypi.org/project/rudra-512-hash/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![Status](https://img.shields.io/badge/status-research-orange)
 
