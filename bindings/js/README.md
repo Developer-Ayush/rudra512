@@ -1,18 +1,20 @@
-# Rudra-512 (Node.js)
+# RUDRA512 (Node.js)
 
-**Rudra-512** is a high-performance 512-bit cryptographic hash function implemented in C++ with Node.js bindings for maximum speed and usability.
+**RUDRA512** is a 512-bit cryptographic hash function implemented in C++ with Node.js bindings, designed as a **research-oriented construction** for experimental analysis.
+
+> ⚠️ **Warning:** This implementation is intended for **research and experimentation only**. It is **not a production-ready cryptographic primitive** and should not be used in security-critical applications.
 
 ---
 
 ## 🚀 Features
 
-* ⚡ **Fast** — Native C++ core via Node.js addon
-* 🔐 **512-bit output** — Strong cryptographic size
-* 🔄 **High avalanche effect** (~50%)
-* 🧂 **Salt support**
-* 🔁 **Configurable rounds**
-* 📁 **File hashing support**
-* 🖥️ **Command Line Interface (CLI)**
+* 512-bit hash output
+* Native C++ core via Node.js addon
+* Deterministic hashing
+* Configurable rounds
+* Optional salt support
+* File hashing support
+* Command Line Interface (CLI)
 
 ---
 
@@ -32,7 +34,7 @@ const rudra = require("rudra-512-hash");
 // Hash a string
 console.log(rudra.hash("hello", 32));
 
-// Hash a file (manual read)
+// Hash a file
 const fs = require("fs");
 const data = fs.readFileSync("example.txt", "utf-8");
 console.log(rudra.hash(data, 32));
@@ -42,17 +44,15 @@ console.log(rudra.hash(data, 32));
 
 ## ⚙️ Parameters
 
-| Parameter | Type | Description               |
-| --------- | ---- | ------------------------- |
-| input     | str  | Input string              |
-| rounds    | int  | Number of rounds          |
-| salt      | str  | Optional salt             |
+| Parameter | Type   | Description      |
+| --------- | ------ | ---------------- |
+| input     | string | Input string     |
+| rounds    | number | Number of rounds |
+| salt      | string | Optional salt    |
 
 ---
 
 ## 🖥️ CLI Usage
-
-After installation:
 
 ```bash
 rudra hello
@@ -106,11 +106,51 @@ Output:
 
 ---
 
-## ⚡ Performance
+## 🔬 Design Overview
 
-* Native C++ backend
-* Optimized bitwise operations
-* Faster than pure JavaScript implementations
+RUDRA512 combines:
+
+* ARX-based mixing (addition, rotation, XOR)
+* Structured preprocessing
+* Tokenisation-based transformation
+* Data-dependent input scattering
+
+The construction is intended to explore alternative hash design approaches.
+
+---
+
+## 📚 Specification & Paper
+
+Full specification and analysis available in the research paper:
+
+**“RUDRA512: A Structured 512-bit Hash Function with Tokenisation and Input Scattering”**
+
+(Insert ePrint link after publication)
+
+---
+
+## 🔁 Reproducibility
+
+* This release corresponds to version **11.10.11**
+* Matches the reference version described in the paper
+* Deterministic across platforms
+
+---
+
+## 🔐 Security Notes
+
+* No formal security proof
+* No complete differential or linear cryptanalysis
+* Not independently audited
+
+👉 This project is intended to encourage **community cryptanalysis and research discussion**.
+
+---
+
+## ⚡ Performance Notes
+
+* Implemented in C++ for efficiency
+* May be slower than established hash functions such as SHA-512 and BLAKE2b
 
 ---
 
@@ -127,14 +167,6 @@ bindings/js/
 
 ---
 
-## 🔐 Security Notes
-
-* Designed for strong avalanche properties
-* Deterministic output for same input + rounds + salt
-* Not yet formally audited
-
----
-
 ## 📜 License
 
 Licensed under the Apache License 2.0.
@@ -143,18 +175,18 @@ Licensed under the Apache License 2.0.
 
 ## 👤 Author
 
-**Ayush Anand**  
-📧 developerayushanand@gmail.com
+Ayush Anand
+[developerayushanand@gmail.com](mailto:developerayushanand@gmail.com)
 
 ---
 
 ## 🌐 Links
 
-* GitHub: https://github.com/Developer-Ayush/rudra512
-* Issues: https://github.com/Developer-Ayush/rudra512/issues
+GitHub: https://github.com/Developer-Ayush/rudra512
+Issues: https://github.com/Developer-Ayush/rudra512/issues
 
 ---
 
 ## 🚀 Version
 
-Current version: **5.0.0**
+Current version: **11.10.11**

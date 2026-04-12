@@ -2,7 +2,10 @@
 
 # ॐ Rudra-512
 
-**A 512-bit cryptographic hash function — inspired by Lord Shiva, built in C++**
+**A 512-bit cryptographic hash function for research and experimental analysis — inspired by Lord Shiva, built in C++**
+
+> ⚠️ **Warning:** Rudra-512 is a research-oriented hash function and is **not a production-ready cryptographic primitive**.  
+> It has not undergone formal third-party cryptanalysis and should not be used in security-critical applications.
 
 [![npm version](https://badge.fury.io/js/rudra-512-hash.svg)](https://www.npmjs.com/package/rudra-512-hash)
 [![Live Demo](https://img.shields.io/badge/Web-Visualizer-purple)](https://rudra-512-hash.vercel.app/)
@@ -17,7 +20,9 @@
 
 ## Overview
 
-Rudra-512 is a custom cryptographic hash function that produces a **512-bit (128-character hexadecimal) digest**. Named after the fierce form of Lord Shiva, it is designed for strong, reliable hashing with excellent statistical properties — and is intentionally tunable to resist GPU-based brute-force attacks via configurable rounds.
+Rudra-512 is a custom, experimental hash function with no formal security proof that produces a **512-bit (128-character hexadecimal) digest**. Named after the fierce form of Lord Shiva, it is designed as a research construction exploring structured preprocessing and tunable round-based hashing.  
+
+It includes configurable rounds that increase computational cost, which may affect brute-force effort, though this has not been formally established.
 
 ```
 Input:  "hello"
@@ -42,10 +47,10 @@ A simple interactive visualizer to see how Rudra-512 works step by step.
 
 | Feature | Detail |
 |---|---|
-| ⚡ **Native C++ core** | High-performance implementation with Python & Node.js bindings |
-| 🐢 **GPU-resistant** | Configurable rounds let you dial up resistance to GPU-accelerated brute-force |
+| ⚙️ **Native C++ core** | Implementation with Python & Node.js bindings |
+| 🔁 **Configurable rounds** | Increases computational cost per hash |
+| 🌊 **Avalanche behavior** | Observed near ~50% bit change (empirical, not formally proven) |
 | 🔐 **512-bit output** | 128-character hex digest for strong collision resistance |
-| 🌊 **High avalanche effect** | ~50% bit change on any input modification |
 | 🧂 **Salt support** | Optional per-hash salt for added uniqueness |
 | 🔁 **Configurable rounds** | Tune the security/performance tradeoff (default: 32) |
 | 📁 **File hashing** | Built-in support for hashing files directly from disk |
@@ -238,7 +243,7 @@ rudra --file document.pdf --rounds 64 --salt mysecret
 
 The `rounds` parameter is the primary knob for tuning Rudra-512 between raw speed and GPU-brute-force resistance.
 
-**How it works:** Each round adds one full compression pass over the internal 512-bit state. More rounds = more CPU work per hash. For a legitimate user hashing one password, the difference between 32 and 128 rounds is milliseconds. For a GPU cluster attempting billions of guesses per second, it's the difference between a feasible attack and an infeasible one.
+**How it works:** Each round adds one full compression pass over the internal 512-bit state. More rounds = more CPU work per hash. For a legitimate user hashing one password, the difference between 32 and 128 rounds is milliseconds. For a GPU cluster attempting billions of guesses per second, it's the increasing rounds increases computational cost per hash, which may impact brute-force feasibility depending on context.
 
 > **Rule of thumb:** Use fewer rounds for speed-critical, non-secret data. Use more rounds wherever a hash could be attacked offline (passwords, secrets, credentials).
 
@@ -381,6 +386,9 @@ const digest = rudra.hash(masterSecret, 128, hsmSalt);
 ---
 
 ## Benchmark Results
+
+> ⚠️ These benchmarks are exploratory and do not constitute a security proof.  
+> Results depend on environment and implementation details.
 
 > ⚠️ **Note:** Results below were recorded on a single system at a specific point in time. Performance varies by CPU, OS, system load, and compiler version. These numbers are provided for relative comparison only — run `benchmark.py` to get results for your own environment.
 
@@ -712,15 +720,15 @@ Contributions are welcome! For significant changes, please open an issue first t
 
 ## Changelog
 
-### v5.0.0
+This release corresponds to reference version **11.10.11**, as described in the research paper.
 
-- Initial release
-- Python bindings via pybind11 (`hash_string`, `hash_file`)
-- Node.js native addon via N-API (`hash`)
-- Salt and configurable rounds support (all parameters optional, defaults to 32 rounds)
-- CLI tool (`rudra`) for both platforms
-- File hashing support
-- Cross-platform compatibility (Linux, macOS, Windows)
+### v11.10.11
+
+- Paper reference release
+- Aligned with research specification
+- Python and Node.js bindings
+- CLI support
+- Configurable rounds and salt
 
 ---
 

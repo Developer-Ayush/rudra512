@@ -1,157 +1,145 @@
-# Rudra-512 (Python)
+# RUDRA512
 
-**Rudra-512** is a high-performance 512-bit cryptographic hash function implemented in C++ with Python bindings for maximum speed and usability.
+RUDRA512 is a 512-bit cryptographic hash function designed as a **research-oriented construction** combining ARX-based mixing with structured preprocessing, including tokenisation and input scattering.
+
+> ⚠️ **Warning:** This implementation is intended for **research and experimentation only**. It is **not a production-ready cryptographic primitive** and should not be used in security-critical applications.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-* ⚡ **Fast** — Native C++ core via pybind11
-* 🔐 **512-bit output** — Strong cryptographic size
-* 🔄 **High avalanche effect** (~50%)
-* 🧂 **Salt support**
-* 🔁 **Configurable rounds**
-* 📁 **File hashing support**
-* 🖥️ **Command Line Interface (CLI)**
+* 512-bit hash output
+* ARX (Add-Rotate-XOR) based internal mixing
+* Structured preprocessing pipeline
+* BPE-based tokenisation (fixed vocabulary)
+* Data-dependent input scattering
+* Deterministic and reproducible design
 
 ---
 
 ## 📦 Installation
 
+Install via pip:
+
 ```bash
-pip install rudra-512-hash
+pip install rudra512
+```
+
+Or install locally:
+
+```bash
+git clone https://github.com/Developer-Ayush/rudra512.git
+cd rudra512
+pip install .
 ```
 
 ---
 
-## 🧠 Usage (Python)
+## 🚀 Usage
+
+### Basic Example
 
 ```python
-from rudra512 import hash_string, hash_file
+from rudra512 import rudra512
 
-# Hash a string
-print(hash_string("hello", 32))
-
-# Hash a file
-print(hash_file("example.txt", 32))
+hash_value = rudra512("hello world")
+print(hash_value)
 ```
 
 ---
 
-## ⚙️ Parameters
-
-| Parameter | Type | Description               |
-| --------- | ---- | ------------------------- |
-| input     | str  | Input string              |
-| rounds    | int  | Number of rounds          |
-| salt      | str  | Optional salt             |
-
----
-
-## 🖥️ CLI Usage
-
-After installation:
+### CLI Usage (if supported)
 
 ```bash
-rudra hello
+python -m rudra512 "hello world"
 ```
 
 ---
 
-### 📌 Examples
-
-```bash
-# Basic hashing
-rudra hello
-
-# Custom rounds
-rudra hello --rounds 64
-
-# With salt
-rudra hello --salt abc
-
-# File hashing
-rudra --file example.txt
-
-# Version
-rudra -v
-
-# Help
-rudra -h
-```
-
----
-
-## 🔁 CLI Options
-
-| Option          | Description                    |
-| --------------- | ------------------------------ |
-| `-r, --rounds`  | Number of rounds (default: 32) |
-| `-s, --salt`    | Optional salt                  |
-| `-f, --file`    | Hash a file                    |
-| `-v, --version` | Show version                   |
-| `-h, --help`    | Show help                      |
-
----
-
-## 🧪 Example Output
+## 🧪 Test Vectors
 
 ```
-Input: "hello"
-Output:
-9f2c7a... (512-bit hex string)
+"" → <hash_output_here>
+"abc" → <hash_output_here>
+"hello world" → <hash_output_here>
 ```
 
----
-
-## ⚡ Performance
-
-* Native C++ backend
-* Optimized bitwise operations
-* Faster than pure Python implementations
+(Replace with actual outputs from your implementation)
 
 ---
 
-## 📁 Project Structure
+## 🔒 Design Overview
 
-```
-rudra512/
-├── __init__.py
-├── cli.py
-├── __main__.py
-├── _rudra512.pyd
-```
+RUDRA512 consists of:
+
+1. **Tokenisation Layer**
+
+   * Uses a fixed BPE vocabulary
+   * Vocabulary is frozen and versioned
+
+2. **Input Scattering**
+
+   * Data-dependent permutation of token sequence
+   * Reduces structured input control
+
+3. **ARX Mixing Core**
+
+   * Multi-round transformation
+   * Combines addition, rotation, and XOR
+
+4. **Finalisation**
+
+   * Produces a 512-bit digest
 
 ---
 
-## 🔐 Security Notes
+## 📚 Specification & Paper
 
-* Designed for strong avalanche properties
-* Deterministic output for same input + rounds + salt
-* Not yet formally audited
+Full specification and analysis available in the paper:
+
+* *RUDRA512: A Structured 512-bit Hash Function with Tokenisation and Input Scattering*
+
+(Include your ePrint link after submission)
 
 ---
 
-## 📜 License
+## 🔁 Reproducibility
 
-Licensed under the Apache License 2.0.
+* The BPE vocabulary is **fixed** and included in the repository
+* SHA-256 hash of vocabulary file is provided in the paper
+* Implementation is deterministic across platforms
+
+---
+
+## ⚠️ Security Notice
+
+* No formal security proof
+* No full differential or linear cryptanalysis
+* Performance significantly slower than standard hash functions such as SHA-512 and BLAKE2b
+
+👉 This project is intended to encourage **community cryptanalysis and research discussion**.
+
+---
+
+## 🤝 Contributing
+
+Contributions, feedback, and cryptanalysis are welcome.
+
+---
+
+## 📄 License
+
+This project is licensed under the **Apache-2.0**.
 
 ---
 
 ## 👤 Author
 
-**Ayush Anand**
-📧 [developerayushanand@gmail.com](mailto:developerayushanand@gmail.com)
+Ayush Anand
+Independent Researcher
 
 ---
 
-## 🌐 Links
+## ⭐ Acknowledgment
 
-* GitHub: https://github.com/Developer-Ayush/rudra512
-* Issues: https://github.com/Developer-Ayush/rudra512/issues
-
----
-
-## 🚀 Version
-
-Current version: **5.0.0**
+This work is released to encourage exploration of alternative hash function design approaches.

@@ -1,6 +1,6 @@
 {
   "name": "rudra-512-hash",
-  "version": "5.0.0",
+  "version": "11.10.11",
   "description": "Rudra-512 cryptographic hash function",
   "main": "index.js",
   "bin": {
@@ -27,7 +27,7 @@
     "install": "node-gyp rebuild"
   },
   "dependencies": {
-    "node-addon-api": "^7.0.0"
+    "node-addon-api": "^8.0.0"
   },
   "devDependencies": {}
 }

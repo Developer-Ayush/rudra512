@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-<title>RUDRA-512 · The Divine Edition</title>
+<title>RUDRA-512 · v5 Divine Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
@@ -88,7 +88,7 @@ body {
 .mandala-bg svg {
   width: max(120vw, 120vh); height: max(120vw, 120vh);
   animation: slowSpin 180s linear infinite;
-  filter: drop-shadow(0 0 20px var(--gold-base));
+  filter: drop-shadow(0 0 30px var(--gold-base));
 }
 @keyframes slowSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -97,6 +97,13 @@ body {
 .orb-gold { width: 800px; height: 800px; background: radial-gradient(circle, rgba(212,175,55,0.08), transparent 60%); top: -200px; left: -200px; animation: drift 20s ease-in-out infinite alternate; }
 .orb-blue { width: 600px; height: 600px; background: radial-gradient(circle, rgba(136,192,208,0.06), transparent 60%); bottom: -100px; right: -100px; animation: drift 25s ease-in-out infinite alternate-reverse; }
 @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(50px, -50px) scale(1.1); } }
+
+/* Divine Breathing Animation */
+@keyframes divinePulse {
+  0% { box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(212,175,55,0.08), inset 0 2px 2px rgba(255,255,255,0.1); }
+  50% { box-shadow: 0 25px 60px rgba(0,0,0,0.9), inset 0 0 35px rgba(212,175,55,0.15), inset 0 2px 5px rgba(255,255,255,0.15); }
+  100% { box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(212,175,55,0.08), inset 0 2px 2px rgba(255,255,255,0.1); }
+}
 
 /* ─── NAVIGATION ─── */
 nav {
@@ -218,7 +225,7 @@ h1 {
   position: relative;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(212,175,55,0.08), inset 0 2px 2px rgba(255,255,255,0.1);
+  animation: divinePulse 6s ease-in-out infinite;
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   transform-style: preserve-3d;
 }
@@ -228,6 +235,7 @@ h1 {
   z-index: -1; opacity: 0.5; pointer-events: none;
 }
 .royal-panel:hover {
+  animation: none; /* stop pulse on hover */
   box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 0 30px rgba(212,175,55,0.2), inset 0 2px 4px rgba(255,255,255,0.2);
   border-color: rgba(212,175,55,0.8);
 }
@@ -304,15 +312,16 @@ input::placeholder { color: var(--ash-dark); }
 .hash-string {
   font-family: 'JetBrains Mono', monospace; font-size: clamp(14px, 2vw, 18px);
   color: var(--gold-light); letter-spacing: 2px;
-  text-shadow: 0 0 15px rgba(212,175,55,0.5);
+  text-shadow: 0 0 15px rgba(212,175,55,0.8);
   display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;
+  word-break: break-all;
 }
 .hash-chunk { 
   display: inline-block; transition: var(--fast-trans); cursor: crosshair; 
   background: rgba(255,255,255,0.02); padding: 4px 8px; border-radius: 4px;
-  border: 1px solid rgba(212,175,55,0.1);
+  border: 1px solid rgba(212,175,55,0.2); box-shadow: 0 0 10px rgba(212,175,55,0.1);
 }
-.hash-chunk:hover { background: var(--gold-glow); border-color: var(--gold-base); transform: scale(1.1) translateZ(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.hash-chunk:hover { background: var(--gold-glow); border-color: var(--gold-base); transform: scale(1.1) translateZ(10px); box-shadow: 0 5px 20px rgba(212,175,55,0.6); }
 
 .meta-info {
   display: flex; gap: 30px; margin-top: 30px; padding-top: 20px;
@@ -365,7 +374,7 @@ input::placeholder { color: var(--ash-dark); }
 .state-word.highlight { border-color: var(--third-eye); box-shadow: 0 0 30px rgba(211,47,47,0.5), inset 0 0 15px rgba(211,47,47,0.3); animation: pulseWord 0.6s ease; }
 @keyframes pulseWord { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
 .word-lbl { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold-base); margin-bottom: 10px; letter-spacing: 2px; }
-.word-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ash-pure); font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+.word-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ash-pure); font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.2); word-break: break-all; }
 
 /* ─── PADDING VIZ ─── */
 .pad-viz { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; transform: translateZ(20px); }
@@ -486,33 +495,25 @@ footer {
 <!-- Sacred Yantra Background -->
 <div class="mandala-bg">
 <svg viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Outer Circles -->
   <circle cx="500" cy="500" r="480" stroke="rgba(212,175,55,0.4)" stroke-width="1"/>
   <circle cx="500" cy="500" r="460" stroke="rgba(212,175,55,0.2)" stroke-width="2" stroke-dasharray="10 10"/>
   <circle cx="500" cy="500" r="400" stroke="rgba(212,175,55,0.5)" stroke-width="1"/>
-  
-  <!-- Lotus Petals (Abstracted) -->
   <g stroke="rgba(212,175,55,0.3)" stroke-width="1">
     <path d="M500,100 Q600,250 500,400 Q400,250 500,100" />
     <path d="M500,900 Q600,750 500,600 Q400,750 500,900" />
     <path d="M100,500 Q250,600 400,500 Q250,400 100,500" />
     <path d="M900,500 Q750,600 600,500 Q750,400 900,500" />
-    <!-- Diagonals -->
     <path d="M217,217 Q350,350 429,429" />
     <path d="M783,783 Q650,650 571,571" />
     <path d="M783,217 Q650,350 571,429" />
     <path d="M217,783 Q350,650 429,571" />
   </g>
-
-  <!-- Triangles (Sri Yantra essence) -->
   <g stroke="rgba(212,175,55,0.6)" stroke-width="1.5" fill="none">
     <polygon points="500,200 750,650 250,650" />
     <polygon points="500,800 250,350 750,350" />
     <polygon points="500,300 650,550 350,550" />
     <polygon points="500,700 350,450 650,450" />
   </g>
-
-  <!-- Inner Bindu -->
   <circle cx="500" cy="500" r="50" stroke="rgba(212,175,55,0.8)" stroke-width="2"/>
   <circle cx="500" cy="500" r="20" fill="rgba(212,175,55,0.5)"/>
 </svg>
@@ -523,29 +524,32 @@ footer {
   <a class="nav-logo" href="#">RUDRA·512</a>
   <div class="nav-links">
     <a class="nav-link" href="#invoke">Invoke</a>
-    <a class="nav-link" href="#architecture">Algorithm</a>
+    <a class="nav-link" href="#architecture">Mandala</a>
     <a class="nav-link" href="#stepper">Stepper</a>
     <a class="nav-link" href="#avalanche">Avalanche</a>
-    <a class="nav-btn" href="https://github.com/Developer-Ayush" target="_blank">@Developer-Ayush ↗</a>
-    <a class="nav-btn" href="https://github.com/Developer-Ayush/rudra-512" target="_blank">Github ↗</a>
-    <a class="nav-btn" href="https://pypi.org/project/rudra-512-hash/" target="_blank">Python ↗</a>
-    <a class="nav-btn" href="https://www.npmjs.com/package/rudra-512-hash" target="_blank">NPM ↗</a>
+    <a class="nav-btn" href="https://github.com/Developer-Ayush/rudra-512" target="_blank">View GitHub ↗</a>
   </div>
 </nav>
 
 <!-- Hero Section -->
 <header>
-  <div class="badge float-label">512-bit · Custom Cryptographic Hash · v3 Hardened · 3D Edition</div>
-  <h1>
-    <span class="rudra">RUDRA</span><span class="dash">-</span><span class="num">512</span>
-  </h1>
-  <p class="subtitle">// Inspired by Lord Shiva · Built in C++ · 512-bit digest · BPE Tokenization · Embedded Salt · Asymmetric Rotations</p>
-  <div class="stats-row">
-    <div class="stat"><span class="stat-val">512</span><span class="stat-lbl">Bit Output</span></div>
-    <div class="stat"><span class="stat-val">8×64</span><span class="stat-lbl">State Words</span></div>
-    <div class="stat"><span class="stat-val">32</span><span class="stat-lbl">Default Rounds</span></div>
-    <div class="stat"><span class="stat-val">~50%</span><span class="stat-lbl">Avalanche</span></div>
-    <div class="stat"><span class="stat-val">128</span><span class="stat-lbl">Hex Chars</span></div>
+  <div class="hero-om">ॐ</div>
+  <div class="badge">
+    <span class="badge-icon">🔱</span> Architecture v5 Parity <span class="badge-icon">🔱</span>
+  </div>
+  <h1>RUDRA<span class="h1-sub">512</span></h1>
+  <div class="hero-subtitle">The Divine Edition</div>
+  <p class="hero-desc">
+    Forged in the fires of Kailash. Featuring <span>Scattered Salt Injection</span> <span class="dot">·</span> 
+    <span>Tokenization Pipeline</span> <span class="dot">·</span> <span>SipHash 4-Word Mixer</span> <span class="dot">·</span> 
+    <span>HAIFA Double Finalization</span>. A 512-bit cryptographic hash function designed to withstand the tests of time and compute.
+  </p>
+
+  <div class="stats-container">
+    <div class="stat-box"><span class="stat-val">512</span><span class="stat-lbl">Bit Digest</span></div>
+    <div class="stat-box"><span class="stat-val">8×64</span><span class="stat-lbl">State Words</span></div>
+    <div class="stat-box"><span class="stat-val">32</span><span class="stat-lbl">Default Rounds</span></div>
+    <div class="stat-box"><span class="stat-val">~50%</span><span class="stat-lbl">Avalanche</span></div>
   </div>
 </header>
 
@@ -562,7 +566,7 @@ footer {
     <div class="input-grid">
       <div class="input-group">
         <label>Sacred Message</label>
-        <input type="text" id="inputMsg" value="hello" placeholder="Enter your text here..."/>
+        <input type="text" id="inputMsg" value="Om Namah Shivaya" placeholder="Enter your text here..."/>
       </div>
       <div class="input-group">
         <label>Permutation Rounds</label>
@@ -570,7 +574,7 @@ footer {
       </div>
       <div class="input-group">
         <label>Vibhuti (Salt) - Optional</label>
-        <input type="text" id="inputSalt" value="" placeholder="Scatter the salt..."/>
+        <input type="text" id="inputSalt" value="Bhasma" placeholder="Scatter the salt..."/>
       </div>
       <button class="btn-royal" onclick="computeHash()">Invoke ॥</button>
     </div>
@@ -590,8 +594,8 @@ footer {
   <!-- PADDING VISUALIZER -->
   <section id="paddingSection" class="royal-panel reveal" style="display: none;">
     <div class="panel-tag">॥ The Anatomy of the Offering ॥</div>
-    <h2 class="panel-title">Block Structure & Padding</h2>
-    <p class="panel-desc">Observe how the Scattered Salt Injection (SSI) places salt bytes independently, followed by Merkle-Damgård padding and 64-bit length enclosure.</p>
+    <h2 class="panel-title">Block Structure & Padding (v5)</h2>
+    <p class="panel-desc">Observe how the Scattered Salt Injection (SSI) places salt bytes independently via hash-derived strides, followed by Merkle-Damgård padding and a 128-bit length enclosure.</p>
     
     <div class="pad-viz" id="paddingViz"></div>
     
@@ -600,7 +604,7 @@ footer {
       <div class="legend-item"><div class="legend-box b-msg"></div> Message Data</div>
       <div class="legend-item"><div class="legend-box b-pad"></div> 0x80 Pad</div>
       <div class="legend-item"><div class="legend-box b-zero" style="border:1px solid #555;"></div> Zero Fill</div>
-      <div class="legend-item"><div class="legend-box b-len"></div> 64-bit Length</div>
+      <div class="legend-item"><div class="legend-box b-len"></div> 128-bit Length</div>
     </div>
   </section>
 
@@ -608,7 +612,7 @@ footer {
   <section id="stateSection" class="royal-panel reveal" style="display: none;">
     <div class="panel-tag">॥ The Inner Sanctum ॥</div>
     <h2 class="panel-title">Final 512-bit State</h2>
-    <p class="panel-desc">The 8 × 64-bit internal registers after absorbing the padded blocks and executing the final permutations. Initialized using fractional components of prime roots.</p>
+    <p class="panel-desc">The 8 × 64-bit internal registers after HAIFA double finalization and length-extension protection.</p>
     <div class="state-grid" id="stateGrid"></div>
   </section>
 
@@ -617,14 +621,14 @@ footer {
   <!-- ARCHITECTURE / MANDALA -->
   <section id="architecture" class="reveal" style="margin-bottom: 60px;">
     <div class="panel-tag">॥ The Eight Paths ॥</div>
-    <h2 class="panel-title" style="margin-bottom: 40px;">Architecture (v4 Parity)</h2>
+    <h2 class="panel-title" style="margin-bottom: 40px;">Architecture (v5 Parity)</h2>
     
     <div class="steps-grid">
       <div class="step-card">
         <div class="step-num">01</div>
         <div class="step-badge">SSI</div>
         <h3 class="step-title">Scattered Salt</h3>
-        <p class="step-desc">Salt bytes are dynamically placed at independent positions via a hash-derived scatter algorithm, preventing clustering.</p>
+        <p class="step-desc">Salt bytes are dynamically placed at independent positions via a 4-word SipHash-derived scatter and quadratic-style stride probing algorithm.</p>
         <div class="step-code">pos[i] = f(data_hash, salt_hash, i)</div>
       </div>
       
@@ -632,40 +636,40 @@ footer {
         <div class="step-num">02</div>
         <div class="step-badge">TPL</div>
         <h3 class="step-title">Token Pipeline</h3>
-        <p class="step-desc">Buffer splits into variable-length tokens. Each undergoes a Fisher-Yates byte shuffle and rolling XOR before absorption.</p>
+        <p class="step-desc">Buffer splits into tokens. Each undergoes a Fisher-Yates byte shuffle and rolling SipHash-driven XOR before absorption.</p>
         <div class="step-code">shuffle(token, fisher_yates(th))</div>
       </div>
       
       <div class="step-card">
         <div class="step-num">03</div>
         <div class="step-badge">SHM</div>
-        <h3 class="step-title">SipHash Mixer</h3>
-        <p class="step-desc">A robust 2-round SipRound-inspired 64-bit mixer guarantees excellent avalanche properties for internal metadata hashing.</p>
-        <div class="step-code">v1=rotl(v1,13)^v0; v3=rotl(v3,16)^v2;</div>
+        <h3 class="step-title">SipHash-2-4 Mixer</h3>
+        <p class="step-desc">A true 4-word SipRound engine replaces generic mixing, guaranteeing excellent avalanche properties for internal metadata.</p>
+        <div class="step-code">sip4_compress(v0, v1, v2, v3);</div>
       </div>
 
       <div class="step-card">
         <div class="step-num">04</div>
-        <div class="step-badge">DOM</div>
-        <h3 class="step-title">Domain Separation</h3>
-        <p class="step-desc">Cryptographic separation guarantees inputs hashed as strings vs files start with mathematically distinct IVs.</p>
-        <div class="step-code">s[5] ^= frac(pi) * 2^64</div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-num">05</div>
         <div class="step-badge">WHT</div>
-        <h3 class="step-title">State Whitening</h3>
-        <p class="step-desc">All 8 words are XOR'd with specific constants and salt tweaks, then fully permuted to erase IV-recovery vectors entirely.</p>
+        <h3 class="step-title">Scaling Whitening</h3>
+        <p class="step-desc">All 8 words are XOR'd with specific constants and salt tweaks, then fully permuted for proportional <i>clamp(2 + R/16, 2, R)</i> rounds.</p>
         <div class="step-code">s[i] ^= WK[i] ^ rotl(salt_h, ...)</div>
       </div>
 
       <div class="step-card">
+        <div class="step-num">05</div>
+        <div class="step-badge">SYM</div>
+        <h3 class="step-title">Two-Snapshot Permute</h3>
+        <p class="step-desc">Permutations capture explicit round snapshots before each loop to ensure symmetric processing and absolute parity across words.</p>
+        <div class="step-code">s[i] += rotl(mid[(i+mix3)%8],...)</div>
+      </div>
+
+      <div class="step-card">
         <div class="step-num">06</div>
-        <div class="step-badge">ASR</div>
-        <h3 class="step-title">Asymmetric Rotations</h3>
-        <p class="step-desc">Period-64 rotation schedule ensures all offsets are strictly within [1, 63]. No undefined behavior (UB), maximizing diffusion.</p>
-        <div class="step-code">v = rotl64(v, ROUND_ROT[idx])</div>
+        <div class="step-badge">HFA</div>
+        <h3 class="step-title">HAIFA Finalization</h3>
+        <p class="step-desc">A running entropy accumulator feeds into a rigorous double finalization process, neutralizing standard length-extension attacks.</p>
+        <div class="step-code">s[0] ^= orig_len ^ DOM_FINAL</div>
       </div>
     </div>
   </section>
@@ -676,7 +680,7 @@ footer {
   <section id="stepper" class="royal-panel reveal">
     <div class="panel-tag">॥ The Dance of Nataraja ॥</div>
     <h2 class="panel-title">Permutation Stepper</h2>
-    <p class="panel-desc">Step through the mathematical choreography of the hash. Watch the state registers evolve block by block in true 3D space.</p>
+    <p class="panel-desc">Step through the mathematical choreography of the v5 hash. Watch the state registers evolve block by block, culminating in the HAIFA double finalization sequence.</p>
     
     <div class="controls-bar">
       <button class="btn-sm" id="btnInit" style="border-color:var(--gold-base); color:var(--gold-base);" onclick="initStepper()">Initialize State</button>
@@ -754,7 +758,7 @@ footer {
         </thead>
         <tbody>
           <tr class="highlight-row">
-            <td>Rudra-512 (Divine)</td>
+            <td>Rudra-512 (Divine v5)</td>
             <td class="txt-good">50.025%</td>
             <td class="txt-good">1.000000</td>
             <td class="txt-good">50.130%</td>
@@ -789,7 +793,7 @@ footer {
 
 <footer>
   <div class="footer-logo">RUDRA·512</div>
-  <div class="footer-text">Constructed for Eternity. Architecture v4.</div>
+  <div class="footer-text">Constructed for Eternity. Architecture v5.</div>
   <div class="footer-text">© 2026 Developer-Ayush</div>
   <div class="footer-mantra">ॐ नमः शिवाय · Har Har Mahadev</div>
 </footer>
@@ -809,8 +813,7 @@ function initBackground() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
-  // Particles simulating golden sparks and holy ash
-  const particleCount = 2000;
+  const particleCount = 2500;
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(particleCount * 3);
   const colors = new Float32Array(particleCount * 3);
@@ -821,9 +824,9 @@ function initBackground() {
   const colorBlue = new THREE.Color(0x88C0D0);
 
   for (let i = 0; i < particleCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 800;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 800;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 400 - 100;
+    positions[i * 3] = (Math.random() - 0.5) * 1000;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 600 - 100;
 
     const rand = Math.random();
     let col = colorGold;
@@ -831,14 +834,13 @@ function initBackground() {
     if (rand > 0.9) col = colorBlue;
 
     colors[i * 3] = col.r; colors[i * 3 + 1] = col.g; colors[i * 3 + 2] = col.b;
-    sizes[i] = Math.random() * 2 + 0.5;
+    sizes[i] = Math.random() * 2.5 + 0.5;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-  // Custom shader for glowing particles
   const material = new THREE.ShaderMaterial({
     uniforms: { time: { value: 0 } },
     vertexShader: `
@@ -849,7 +851,8 @@ function initBackground() {
       void main() {
         vColor = color;
         vec3 pos = position;
-        pos.y += sin(time * 0.5 + pos.x * 0.01) * 10.0;
+        pos.y += sin(time * 0.3 + pos.x * 0.01) * 15.0;
+        pos.x += cos(time * 0.2 + pos.y * 0.01) * 10.0;
         vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
         gl_PointSize = size * (300.0 / -mvPosition.z);
         gl_Position = projectionMatrix * mvPosition;
@@ -862,7 +865,7 @@ function initBackground() {
         float ll = length(xy);
         if(ll > 0.5) discard;
         float alpha = (0.5 - ll) * 2.0;
-        gl_FragColor = vec4(vColor, alpha * 0.6);
+        gl_FragColor = vec4(vColor, alpha * 0.7);
       }
     `,
     transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
@@ -889,11 +892,9 @@ function initBackground() {
     const delta = clock.getDelta();
     material.uniforms.time.value += delta;
     
-    // Slow drifting rotation
-    particleSystem.rotation.y += 0.0005;
-    particleSystem.rotation.x += 0.0002;
+    particleSystem.rotation.y += 0.0006;
+    particleSystem.rotation.x += 0.0003;
     
-    // Mouse parallax
     camera.position.x += (mouseX - camera.position.x) * 0.02;
     camera.position.y += (-mouseY - camera.position.y) * 0.02;
     camera.lookAt(scene.position);
@@ -904,42 +905,20 @@ function initBackground() {
 }
 
 /* ═════════════════════════════════════════════════════════════
-   UI INTERACTIVITY, 3D TILT & CUSTOM CURSOR
+   UI INTERACTIVITY & CUSTOM CURSOR
 ═════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   initBackground();
   setupCursor();
   setupScrollReveal();
-  setup3DTilt();
   
-  // Initial computations
   computeHash();
   computeAvalanche();
 
-  // Enter key listeners
   ['inputMsg', 'inputSalt', 'inputRounds'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') computeHash(); });
   });
 });
-
-function setup3DTilt() {
-  if (window.innerWidth < 1024) return;
-  document.querySelectorAll('.royal-panel, .step-card, .ava-card').forEach(el => {
-    el.addEventListener('mousemove', e => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const xc = rect.width / 2;
-      const yc = rect.height / 2;
-      const dx = x - xc;
-      const dy = y - yc;
-      el.style.transform = `perspective(1200px) rotateY(${dx / 40}deg) rotateX(${-dy / 40}deg) translateY(-5px)`;
-    });
-    el.addEventListener('mouseleave', () => {
-      el.style.transform = 'perspective(1200px) rotateY(0) rotateX(0) translateY(0)';
-    });
-  });
-}
 
 function setupCursor() {
   if (window.innerWidth < 1024) return;
@@ -979,7 +958,7 @@ function setupScrollReveal() {
 }
 
 /* ═════════════════════════════════════════════════════════════
-   RUDRA-512 (v4 Architecture Parity in JS via BigInt)
+   RUDRA-512 (v5 Architecture Parity in JS via BigInt)
 ═════════════════════════════════════════════════════════════ */
 const MASK64 = (1n << 64n) - 1n;
 const INIT = [
@@ -991,14 +970,15 @@ const ROUND_ROT = [
   3,5,7,11,13,17,19,23, 29,31,37,41,43,47,53,59,
   61,2,4,6,8,10,12,14, 16,18,20,22,24,26,28,30,
   32,34,36,38,40,42,44,46, 48,50,52,54,56,58,60,62,
-  1,9,15,21,25,27,33,35, 39,45,49,51,55,57,63,15
-]; // Updated from C++ code provided
+  1,9,15,21,25,27,33,35, 39,45,49,51,55,57,63,63
+]; // v5 fixes duplicate 15 to 63 at end
 
 const DOM_STRING = 0x243f6a8885a308d3n;
-const DOM_TOKEN = 0x6c15b6c9aa27a8a4n;
-const DOM_SALT = 0xb5470917a2388f00n;
+const DOM_TOKEN  = 0x6c15b6c9aa27a8a4n;
+const DOM_SALT   = 0xb5470917a2388f00n;
 const DOM_ROUNDS = 0x9e3779b97f4a7c15n;
-const GOLDEN = 0x9e3779b97f4a7c15n;
+const DOM_FINAL  = 0xbe5466cf34e90c6cn; // v5 addition
+const GOLDEN     = 0x9e3779b97f4a7c15n;
 
 function rotl64(x, r) {
   const rb = BigInt(r) & 63n;
@@ -1011,28 +991,39 @@ function safe_rotl64(x, r) {
   return rotl64(x, r);
 }
 
-// SipHash-inspired mixer
-function mix64(v0, v1, v2, v3) {
-  v0 = (v0 + v1) & MASK64; v1 = rotl64(v1, 13); v1 = (v1 ^ v0) & MASK64; v0 = rotl64(v0, 32);
-  v2 = (v2 + v3) & MASK64; v3 = rotl64(v3, 16); v3 = (v3 ^ v2) & MASK64;
-  v0 = (v0 + v3) & MASK64; v3 = rotl64(v3, 21); v3 = (v3 ^ v0) & MASK64;
-  v2 = (v2 + v1) & MASK64; v1 = rotl64(v1, 17); v1 = (v1 ^ v2) & MASK64; v2 = rotl64(v2, 32);
-  return (v0 ^ v1 ^ v2 ^ v3) & MASK64;
+// v5 TRUE 4-WORD SIPHASH COMPRESS
+function sip4_compress(s) {
+  s.v0 = (s.v0 + s.v1) & MASK64; s.v1 = rotl64(s.v1, 13); s.v1 = (s.v1 ^ s.v0) & MASK64; s.v0 = rotl64(s.v0, 32);
+  s.v2 = (s.v2 + s.v3) & MASK64; s.v3 = rotl64(s.v3, 16); s.v3 = (s.v3 ^ s.v2) & MASK64;
+  s.v0 = (s.v0 + s.v3) & MASK64; s.v3 = rotl64(s.v3, 21); s.v3 = (s.v3 ^ s.v0) & MASK64;
+  s.v2 = (s.v2 + s.v1) & MASK64; s.v1 = rotl64(s.v1, 17); s.v1 = (s.v1 ^ s.v2) & MASK64; s.v2 = rotl64(s.v2, 32);
+}
+
+function sip_absorb(s, m) {
+  s.v3 = (s.v3 ^ m) & MASK64;
+  sip4_compress(s); sip4_compress(s);
+  s.v0 = (s.v0 ^ m) & MASK64;
+}
+
+function sip_finalize(s) {
+  s.v2 = (s.v2 ^ 0xffn) & MASK64;
+  sip4_compress(s); sip4_compress(s); sip4_compress(s); sip4_compress(s);
+  return (s.v0 ^ s.v1 ^ s.v2 ^ s.v3) & MASK64;
 }
 
 function strong_hash(data, seed) {
-  let v0 = (seed ^ 0x736f6d6570736575n) & MASK64;
-  let v1 = (seed ^ 0x646f72616e646f6dn) & MASK64;
-  let v2 = (seed ^ 0x6c7967656e657261n) & MASK64;
-  let v3 = (seed ^ 0x7465646279746573n) & MASK64;
+  let s = {
+    v0: (seed ^ 0x736f6d6570736575n) & MASK64,
+    v1: (seed ^ 0x646f72616e646f6dn) & MASK64,
+    v2: (seed ^ 0x6c7967656e657261n) & MASK64,
+    v3: (seed ^ 0x7465646279746573n) & MASK64
+  };
   const blocks = Math.floor(data.length / 8);
   for (let i = 0; i < blocks; i++) {
     let m = 0n; for (let k = 0; k < 8; k++) m = (m | (BigInt(data[i * 8 + k]) << (BigInt(k) * 8n))) & MASK64;
-    v3 = (v3 ^ m) & MASK64;
-    v0 = mix64(v0, v1, v2, v3); v0 = mix64(v0, v1, v2, v3);
-    v0 = (v0 ^ m) & MASK64;
+    sip_absorb(s, m);
   }
-  let tail = BigInt(data.length) & 0xffn; tail = tail << 56n;
+  let tail = (BigInt(data.length) & 0xffn) << 56n;
   const rem = data.length % 8; const t = data.slice(blocks * 8);
   if (rem >= 1) tail = (tail | BigInt(t[0])) & MASK64;
   if (rem >= 2) tail = (tail | (BigInt(t[1]) << 8n)) & MASK64;
@@ -1041,10 +1032,8 @@ function strong_hash(data, seed) {
   if (rem >= 5) tail = (tail | (BigInt(t[4]) << 32n)) & MASK64;
   if (rem >= 6) tail = (tail | (BigInt(t[5]) << 40n)) & MASK64;
   if (rem >= 7) tail = (tail | (BigInt(t[6]) << 48n)) & MASK64;
-  v3 = (v3 ^ tail) & MASK64; v0 = mix64(v0, v1, v2, v3); v0 = mix64(v0, v1, v2, v3); v0 = (v0 ^ tail) & MASK64;
-  v2 = (v2 ^ 0xffn) & MASK64;
-  for (let i = 0; i < 4; i++) v0 = mix64(v0, v1, v2, v3);
-  return (v0 ^ v1 ^ v2 ^ v3) & MASK64;
+  sip_absorb(s, tail);
+  return sip_finalize(s);
 }
 
 function hash_salt(salt) {
@@ -1052,9 +1041,9 @@ function hash_salt(salt) {
   return strong_hash(salt, DOM_SALT);
 }
 
-// Scattered Salt Injection (SSI)
+// v5 SSI: Includes quadratic-style stride deduplication and byte-value fold-in
 function build_scattered_message(inp, salt, rounds) {
-  if (!salt || !salt.length) return inp;
+  if (!salt || !salt.length) return [...inp];
   const total_len = inp.length + salt.length;
   const salt_hash = strong_hash(salt, DOM_SALT);
   const data_hash = strong_hash(inp, DOM_SALT ^ BigInt(rounds));
@@ -1062,17 +1051,35 @@ function build_scattered_message(inp, salt, rounds) {
   
   for (let i = 0; i < salt.length; i++) {
     let h = (data_hash ^ ((salt_hash * BigInt(i + 1)) & MASK64) ^ ((GOLDEN * BigInt(rounds + i)) & MASK64)) & MASK64;
-    h = mix64(h, salt_hash, data_hash, GOLDEN ^ BigInt(i));
-    h = (h ^ (BigInt(salt[i]) * 0x517cc1b727220a95n)) & MASK64;
+    h = (h ^ (BigInt(salt[i]) * 0x517cc1b727220a95n)) & MASK64; // NEW-4
+    if (i + 1 < salt.length) h = (h ^ (BigInt(salt[i + 1]) * DOM_SALT)) & MASK64; // NEW-4 adjacent byte
+    
+    let s = {
+      v0: (h ^ 0x736f6d6570736575n) & MASK64,
+      v1: (salt_hash ^ 0x646f72616e646f6dn) & MASK64,
+      v2: (data_hash ^ 0x6c7967656e657261n) & MASK64,
+      v3: (GOLDEN ^ 0x7465646279746573n) & MASK64
+    };
+    sip_absorb(s, (h ^ BigInt(i)) & MASK64);
+    h = sip_finalize(s);
     h = safe_rotl64(h, (i * 7 + rounds) % 62 + 1);
     positions.push(Number(h % BigInt(total_len)));
   }
   
-  // De-collide
+  // FIX-7 De-collide
   const occupied = new Array(total_len).fill(false);
   for (let i = 0; i < salt.length; i++) {
+    let stride_h = strong_hash([salt[i]], data_hash ^ BigInt(i));
+    let stride = Number(stride_h % BigInt(total_len));
+    if (stride === 0) stride = 1;
+    if (stride % 2 === 0) stride ^= 1; // make odd
+
     let pos = positions[i];
-    while (occupied[pos]) pos = (pos + 1) % total_len;
+    let probe = 0;
+    while (occupied[pos]) {
+      probe++;
+      pos = (positions[i] + probe * stride) % total_len;
+    }
     occupied[pos] = true; positions[i] = pos;
   }
   
@@ -1118,26 +1125,32 @@ function tokenize_and_mix(combined, salt, rounds) {
     let key = (th ^ rotl64(buf_hash, (ti * 11 + 7) % 63 + 1)) & MASK64;
     for (let k = 0; k < tlen; k++) {
       tok[k] ^= Number((key >> (BigInt(k % 8) * 8n)) & 0xffn);
-      if (k % 8 === 7) key = mix64(key, th, buf_hash, BigInt(ti * tlen + k));
+      if (k % 8 === 7) {
+        let s = { v0: key, v1: th, v2: buf_hash, v3: BigInt(ti * tlen + k) };
+        sip4_compress(s);
+        key = (s.v0 ^ s.v1 ^ s.v2 ^ s.v3) & MASK64;
+      }
     }
     result.push(...tok);
   }
   return result;
 }
 
+// FIX-4 / NEW-5: Two-snapshot explicit semantics
 function permute(state, rounds) {
   for (let r = 0; r < rounds; r++) {
     const mix = (r % 7) + 1, mix2 = ((r + 2) % 7) + 1, mix3 = ((r + 4) % 7) + 1;
-    const old = [...state];
+    const old = [...state]; // loop 1 snapshot
     for (let i = 0; i < 8; i++) {
       let v = (old[i] ^ rotl64(old[(i + mix) % 8], ROT[i])) & MASK64;
       v = (v + old[(i + mix2) % 8]) & MASK64;
       const aR = ROUND_ROT[(i * 5 + r * 9) % 64];
-      v = rotl64(v, aR === 0 ? 1 : aR); // Extra safety
+      v = rotl64(v, aR === 0 ? 1 : aR); 
       v = (v ^ (old[(i + 5) % 8] >> 17n)) & MASK64;
       state[i] = v;
     }
-    for (let i = 0; i < 8; i++) state[i] = (state[i] + rotl64(state[(i + mix3) % 8], ROT[(i + mix3) % 8])) & MASK64;
+    const mid = [...state]; // loop 2 snapshot
+    for (let i = 0; i < 8; i++) state[i] = (state[i] + rotl64(mid[(i + mix3) % 8], ROT[(i + mix3) % 8])) & MASK64;
   }
 }
 
@@ -1159,11 +1172,13 @@ const WK = [
 
 function whiten_state(s, salt_hash, rounds) {
   for (let i = 0; i < 8; i++) s[i] = (s[i] ^ WK[i] ^ rotl64(salt_hash, (i * 7 + 3) % 63 + 1)) & MASK64;
-  permute(s, Math.max(2, Math.min(Math.floor(rounds / 4), 8)));
+  let w_rounds = Math.max(2, Math.min(2 + Math.floor(rounds / 16), rounds));
+  permute(s, w_rounds);
 }
 
 function absorb_block(state, block, bi, salt_hash, rounds) {
-  const obfI = (BigInt(bi) ^ salt_hash ^ rotl64(salt_hash, 32)) & MASK64;
+  const rTweak = (BigInt(rounds) * DOM_ROUNDS) & MASK64;
+  const obfI = (BigInt(bi) ^ salt_hash ^ rotl64(salt_hash, 32) ^ rTweak) & MASK64;
   for (let j = 0; j < 8; j++) {
     let w = 0n; for (let k = 0; k < 8; k++) w = (w << 8n) | BigInt(block[j * 8 + k]);
     const tA = (obfI + BigInt(j) + state[j]) & MASK64;
@@ -1186,13 +1201,46 @@ function rudraHashDivine(input, rounds, salt) {
   const state = make_init_state(rounds, salt_hash, DOM_STRING);
   whiten_state(state, salt_hash, rounds);
   
+  const original_len = BigInt(inp.length);
+  const total_len = BigInt(processed.length);
+  
+  // NEW-6 Entropy Acc
+  let ent = {
+    v0: (salt_hash ^ DOM_FINAL) & MASK64,
+    v1: (BigInt(rounds) * DOM_ROUNDS) & MASK64,
+    v2: (total_len ^ original_len) & MASK64,
+    v3: (DOM_STRING ^ 0x517cc1b727220a95n) & MASK64 // DOM_FILE replacement
+  };
+
   const pad = [...processed];
-  const bitL = BigInt(processed.length) * 8n;
-  pad.push(0x80); while (pad.length % 64 !== 56) pad.push(0);
-  for (let i = 7; i >= 0; i--) pad.push(Number((bitL >> BigInt(i * 8)) & 0xffn));
+  const bit_lo = (total_len << 3n) & MASK64;
+  const bit_hi = (total_len >> 61n) & MASK64;
+  
+  pad.push(0x80); while (pad.length % 64 !== 48) pad.push(0);
+  for (let i = 7n; i >= 0n; i--) pad.push(Number((bit_hi >> (i * 8n)) & 0xffn));
+  for (let i = 7n; i >= 0n; i--) pad.push(Number((bit_lo >> (i * 8n)) & 0xffn));
   
   let bi = 0;
-  for (let off = 0; off < pad.length; off += 64, bi++) absorb_block(state, pad.slice(off, off + 64), bi, salt_hash, rounds);
+  for (let off = 0; off < pad.length; off += 64, bi++) {
+    absorb_block(state, pad.slice(off, off + 64), bi, salt_hash, rounds);
+    sip_absorb(ent, (BigInt(bi) ^ state[0] ^ state[7]) & MASK64);
+  }
+  
+  const entropy_final = sip_finalize(ent);
+  state[7] = (state[7] ^ entropy_final ^ rotl64(entropy_final, 31)) & MASK64;
+  
+  permute(state, rounds);
+  
+  // NEW-1 HAIFA Tweak
+  state[0] = (state[0] ^ original_len ^ DOM_FINAL) & MASK64;
+  state[1] = (state[1] ^ total_len ^ rotl64(DOM_FINAL, 32)) & MASK64;
+  state[2] = (state[2] ^ rotl64(original_len ^ total_len, 17)) & MASK64;
+  state[3] = (state[3] ^ ((BigInt(rounds) * DOM_ROUNDS) & MASK64) ^ DOM_FINAL) & MASK64;
+  state[4] = (state[4] ^ salt_hash ^ rotl64(entropy_final, 13)) & MASK64;
+  state[5] = (state[5] ^ rotl64(original_len, 41) ^ total_len) & MASK64;
+  state[6] = (state[6] ^ entropy_final ^ BigInt(rounds)) & MASK64;
+  state[7] = (state[7] ^ rotl64(salt_hash ^ total_len, 29)) & MASK64;
+  
   permute(state, rounds);
   
   return { hex: state.map(v => v.toString(16).padStart(16, '0')).join(''), state };
@@ -1215,7 +1263,7 @@ function computeHash() {
     const box = document.getElementById('hashOutput');
     box.innerHTML = '';
     
-    // Group into chunks of 8 characters for readability with flex wrap
+    // Group chunks to elegantly wrap inline
     for (let i = 0; i < 16; i++) {
       const sp = document.createElement('span');
       sp.className = 'hash-chunk';
@@ -1231,7 +1279,6 @@ function computeHash() {
     showPaddingViz(msg, salt, rounds);
     showState(res.state);
     
-    // Trigger Avalanche update
     document.getElementById('avaA').value = msg;
     document.getElementById('avaB').value = msg + "1";
     computeAvalanche();
@@ -1255,16 +1302,20 @@ function showPaddingViz(input, salt, rounds) {
   const combined = build_scattered_message(inp, slt, rounds);
   const processed = tokenize_and_mix(combined, slt, rounds);
   const pad = [...processed];
-  const bitL = BigInt(processed.length) * 8n;
-  pad.push(0x80); while (pad.length % 64 !== 56) pad.push(0);
-  for (let i = 7; i >= 0; i--) pad.push(Number((bitL >> BigInt(i * 8)) & 0xffn));
+  const total_len = BigInt(processed.length);
+  const bit_lo = (total_len << 3n) & MASK64;
+  const bit_hi = (total_len >> 61n) & MASK64;
+
+  pad.push(0x80); while (pad.length % 64 !== 48) pad.push(0);
+  for (let i = 7n; i >= 0n; i--) pad.push(Number((bit_hi >> (i * 8n)) & 0xffn));
+  for (let i = 7n; i >= 0n; i--) pad.push(Number((bit_lo >> (i * 8n)) & 0xffn));
 
   const viz = document.getElementById('paddingViz');
   viz.innerHTML = '';
   
-  const limit = Math.min(pad.length, 128); // max blocks to show
+  const limit = Math.min(pad.length, 128); 
   const msgEnd = processed.length;
-  const lenSt = pad.length - 8;
+  const lenSt = pad.length - 16;
 
   for (let i = 0; i < limit; i++) {
     const cell = document.createElement('div');
@@ -1306,7 +1357,7 @@ function showState(state) {
 /* ═════════════════════════════════════════════════════════════
    STEPPER LOGIC
 ═════════════════════════════════════════════════════════════ */
-let STEP_STATE = { steps: [], idx: 0, state: null, salt_hash: 0n, pad: [], autoInterval: null, history: [], snap: null, lastHIdx: -1 };
+let STEP_STATE = { steps: [], idx: 0, state: null, salt_hash: 0n, pad: [], autoInterval: null, history: [], snap: null, ent: null, lastHIdx: -1, original_len: 0n, total_len: 0n, rounds: 32 };
 
 function initStepper() {
   const msg = document.getElementById('inputMsg').value;
@@ -1321,12 +1372,17 @@ function initStepper() {
   
   const combined = build_scattered_message(inp, slt, rounds);
   const processed = tokenize_and_mix(combined, slt, rounds);
-  const pad = [...processed];
-  const bitL = BigInt(processed.length) * 8n;
-  pad.push(0x80); while (pad.length % 64 !== 56) pad.push(0);
-  for (let i = 7; i >= 0; i--) pad.push(Number((bitL >> BigInt(i * 8)) & 0xffn));
+  
+  const original_len = BigInt(inp.length);
+  const total_len = BigInt(processed.length);
+  const bit_lo = (total_len << 3n) & MASK64;
+  const bit_hi = (total_len >> 61n) & MASK64;
 
-  // Build Operations list
+  const pad = [...processed];
+  pad.push(0x80); while (pad.length % 64 !== 48) pad.push(0);
+  for (let i = 7n; i >= 0n; i--) pad.push(Number((bit_hi >> (i * 8n)) & 0xffn));
+  for (let i = 7n; i >= 0n; i--) pad.push(Number((bit_lo >> (i * 8n)) & 0xffn));
+
   const steps = [];
   const nb = pad.length / 64;
   for (let b = 0; b < nb; b++) {
@@ -1336,10 +1392,19 @@ function initStepper() {
       steps.push({ phase: `Cross R${r+1}`, type: 'perm_c', r, mix3: ((r+4)%7)+1 });
     }
   }
+  
+  steps.push({ phase: 'Entropy Injection', type: 'entropy' });
+  for (let r = 0; r < rounds; r++) {
+    for (let i = 0; i < 8; i++) steps.push({ phase: `Pre-HAIFA R${r+1}`, type: 'perm_w', r, i, mix: (r%7)+1, mix2: ((r+2)%7)+1, rot: (ROUND_ROT[(i*5+r*9)%64])||1 });
+    steps.push({ phase: `Pre-HAIFA Cross R${r+1}`, type: 'perm_c', r, mix3: ((r+4)%7)+1 });
+  }
+
+  steps.push({ phase: 'HAIFA Tweak Binding', type: 'haifa' });
   for (let r = 0; r < rounds; r++) {
     for (let i = 0; i < 8; i++) steps.push({ phase: `Final R${r+1}`, type: 'perm_w', r, i, mix: (r%7)+1, mix2: ((r+2)%7)+1, rot: (ROUND_ROT[(i*5+r*9)%64])||1 });
     steps.push({ phase: `Final Cross R${r+1}`, type: 'perm_c', r, mix3: ((r+4)%7)+1 });
   }
+  
   steps.push({ phase: 'Complete', type: 'done' });
 
   STEP_STATE.steps = steps;
@@ -1347,6 +1412,17 @@ function initStepper() {
   STEP_STATE.history = [];
   STEP_STATE.salt_hash = salt_hash;
   STEP_STATE.pad = pad;
+  STEP_STATE.rounds = rounds;
+  STEP_STATE.original_len = original_len;
+  STEP_STATE.total_len = total_len;
+  
+  STEP_STATE.ent = {
+    v0: (salt_hash ^ DOM_FINAL) & MASK64,
+    v1: (BigInt(rounds) * DOM_ROUNDS) & MASK64,
+    v2: (total_len ^ original_len) & MASK64,
+    v3: (DOM_STRING ^ 0x517cc1b727220a95n) & MASK64
+  };
+
   STEP_STATE.state = make_init_state(rounds, salt_hash, DOM_STRING);
   whiten_state(STEP_STATE.state, salt_hash, rounds);
   STEP_STATE.snap = null;
@@ -1374,6 +1450,7 @@ function stepBack() {
   
   STEP_STATE.state = prev.state;
   STEP_STATE.snap = prev.snap;
+  STEP_STATE.ent = prev.ent;
   STEP_STATE.lastHIdx = prev.hIdx;
   
   document.getElementById('flowDiagram').innerHTML = prev.html;
@@ -1390,10 +1467,10 @@ function stepBack() {
 function stepFwd() {
   if(STEP_STATE.idx >= STEP_STATE.steps.length) return;
 
-  // Save history before modifying
   STEP_STATE.history.push({
     state: [...STEP_STATE.state],
     snap: STEP_STATE.snap ? [...STEP_STATE.snap] : null,
+    ent: { ...STEP_STATE.ent },
     html: document.getElementById('flowDiagram').innerHTML,
     hIdx: STEP_STATE.lastHIdx
   });
@@ -1404,20 +1481,20 @@ function stepFwd() {
   const hex = v => v.toString(16).padStart(16,'0');
 
   if(step.type === 'absorb') {
-    const obfI = (BigInt(step.blockIdx) ^ STEP_STATE.salt_hash ^ rotl64(STEP_STATE.salt_hash, 32)) & MASK64;
+    const rTweak = (BigInt(STEP_STATE.rounds) * DOM_ROUNDS) & MASK64;
+    const obfI = (BigInt(step.blockIdx) ^ STEP_STATE.salt_hash ^ rotl64(STEP_STATE.salt_hash, 32) ^ rTweak) & MASK64;
     for (let j = 0; j < 8; j++) {
       let w = 0n; for (let k = 0; k < 8; k++) w = (w << 8n) | BigInt(STEP_STATE.pad[step.off + j * 8 + k]);
       const tw = rotl64((obfI + BigInt(j) + s[j]) & MASK64, ROT[j % 8]);
       s[j] = (s[j] ^ w ^ tw) & MASK64;
     }
-    html = `<strong style="color:var(--gold-base)">Absorbing 64-byte chunk</strong><br/>XORing data words and tweaks into state.`;
+    sip_absorb(STEP_STATE.ent, (BigInt(step.blockIdx) ^ s[0] ^ s[7]) & MASK64);
+    html = `<strong style="color:var(--gold-base)">Absorbing 64-byte chunk</strong><br/>XORing data words and tweaks into state. SipHash entropy acc updated.`;
   } 
   else if (step.type === 'perm_w') {
     const { i, mix, mix2, rot } = step;
-    // Snapshot the state at the beginning of the round so it represents 'old' accurately across i=0..7 updates
     if (i === 0) STEP_STATE.snap = [...s]; 
     let old = STEP_STATE.snap; 
-    
     let v = (old[i] ^ rotl64(old[(i + mix) % 8], ROT[i])) & MASK64;
     v = (v + old[(i + mix2) % 8]) & MASK64;
     v = rotl64(v, rot);
@@ -1427,8 +1504,28 @@ function stepFwd() {
     html = `v = <span style="color:var(--ganga-cyan)">s[${i}]</span> ^ rotl(s[${(i+mix)%8}], ${ROT[i]})<br/>v = (v + s[${(i+mix2)%8}])<br/>v = rotl(v, ${rot}) ^ (s[${(i+5)%8}] >> 17)<br/><strong style="color:var(--gold-light)">s[${i}] -> ${hex(v)}</strong>`;
   }
   else if (step.type === 'perm_c') {
-    for (let i = 0; i < 8; i++) s[i] = (s[i] + rotl64(s[(i + step.mix3) % 8], ROT[(i + step.mix3) % 8])) & MASK64;
-    html = `<strong style="color:var(--kailash-blue)">Cross-mixing all words</strong><br/>s[i] += rotl(s[(i+${step.mix3})%8], ROT[(i+${step.mix3})%8])`;
+    const mid = [...s];
+    for (let i = 0; i < 8; i++) s[i] = (s[i] + rotl64(mid[(i + step.mix3) % 8], ROT[(i + step.mix3) % 8])) & MASK64;
+    html = `<strong style="color:var(--kailash-blue)">Cross-mixing all words</strong><br/>s[i] += rotl(mid[(i+${step.mix3})%8], ROT[(i+${step.mix3})%8])`;
+  }
+  else if (step.type === 'entropy') {
+    const eFinal = sip_finalize(STEP_STATE.ent);
+    STEP_STATE.entropy_final = eFinal;
+    s[7] = (s[7] ^ eFinal ^ rotl64(eFinal, 31)) & MASK64;
+    hIdx = 7;
+    html = `<strong style="color:var(--ganga-cyan)">Running Entropy Inject</strong><br/>s[7] ^= eFinal ^ rotl(eFinal, 31)<br/>eFinal = ${hex(eFinal)}`;
+  }
+  else if (step.type === 'haifa') {
+    const o = STEP_STATE.original_len, t = STEP_STATE.total_len, r = BigInt(STEP_STATE.rounds), e = STEP_STATE.entropy_final, sh = STEP_STATE.salt_hash;
+    s[0] = (s[0] ^ o ^ DOM_FINAL) & MASK64;
+    s[1] = (s[1] ^ t ^ rotl64(DOM_FINAL, 32)) & MASK64;
+    s[2] = (s[2] ^ rotl64(o ^ t, 17)) & MASK64;
+    s[3] = (s[3] ^ ((r * DOM_ROUNDS) & MASK64) ^ DOM_FINAL) & MASK64;
+    s[4] = (s[4] ^ sh ^ rotl64(e, 13)) & MASK64;
+    s[5] = (s[5] ^ rotl64(o, 41) ^ t) & MASK64;
+    s[6] = (s[6] ^ e ^ r) & MASK64;
+    s[7] = (s[7] ^ rotl64(sh ^ t, 29)) & MASK64;
+    html = `<strong style="color:var(--third-eye)">HAIFA Double Finalization Tweak</strong><br/>Injecting length, round count, and entropy into all words.`;
   }
   else if (step.type === 'done') {
     html = `<strong style="color:var(--third-eye)">DIGEST FINALIZED</strong><br/><div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">${s.map(v => `<span class="hash-chunk">${hex(v).slice(0,8)}</span><span class="hash-chunk">${hex(v).slice(8,16)}</span>`).join('')}</div>`;
@@ -1452,7 +1549,7 @@ function toggleAuto() {
     btn.innerHTML = '⚡ Auto Execute';
   } else {
     btn.innerHTML = '⏸ Pause';
-    STEP_STATE.autoInterval = setInterval(stepFwd, 50);
+    STEP_STATE.autoInterval = setInterval(stepFwd, 30);
   }
 }
 
@@ -1467,17 +1564,9 @@ function renderStepperGrid(state, hIdx) {
   });
 }
 
-function stopAuto() {
-  if (ST.auto) { clearInterval(ST.auto); ST.auto = null; }
-  document.getElementById('btnAuto').textContent = 'Auto Run';
-}
-
-function toggleAuto() {
-  if (ST.auto) { stopAuto(); return; }
-  if (!ST.steps.length) initStepper();
-  if (ST.done) return;
-  document.getElementById('btnAuto').textContent = 'Pause';
-  ST.auto = setInterval(() => { if (ST.done) { stopAuto(); return; } stepFwd(); }, 60);
+function updateStepLabels(phase, op) {
+  document.getElementById('lblPhase').textContent = phase;
+  document.getElementById('lblOp').textContent = op;
 }
 
 /* ═════════════════════════════════════════════════════════════

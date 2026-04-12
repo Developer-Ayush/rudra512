@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(rudra512 VERSION 5.0.0 LANGUAGES CXX)
+project(rudra512 VERSION 11.10.11 LANGUAGES CXX)
 
 # -------------------------
 # C++ Standard
