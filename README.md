@@ -8,7 +8,6 @@
 > It has not undergone formal third-party cryptanalysis and should not be used in security-critical applications.
 
 [![npm version](https://badge.fury.io/js/rudra-512-hash.svg)](https://www.npmjs.com/package/rudra-512-hash)
-[![Live Demo](https://img.shields.io/badge/Web-Visualizer-purple)](https://rudra-512-hash.vercel.app/)
 [![C++](https://img.shields.io/badge/Core-C%2B%2B17-blue)](https://github.com/Developer-Ayush/rudra512)
 [![PyPI version](https://badge.fury.io/py/rudra-512-hash.svg)](https://pypi.org/project/rudra-512-hash/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
